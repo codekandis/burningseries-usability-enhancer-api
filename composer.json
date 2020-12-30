@@ -26,11 +26,17 @@
 		"source": "https://github.com/codekandis/burningseries-usability-enhancer-api/tree/master"
 	},
 	"require": {
-		"php": "^7.4"
+		"php": "^7.4",
+		"codekandis/tiphy": "^0",
+		"codekandis/sentry-client": "dev-development",
+		"codekandis/tiphy-sentry-client-integration": "^0",
+		"codekandis/code-message-interpreter": "^1",
+		"codekandis/authentication": "^0"
 	},
 	"require-dev": {
 		"roave/security-advisories": "dev-master",
-		"sensiolabs/security-checker": "^6"
+		"sensiolabs/security-checker": "^6",
+		"phpunit/phpunit": "^8"
 	},
 	"repositories": {
 	},
