@@ -3,7 +3,7 @@ namespace CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities;
 
 use CodeKandis\Tiphy\Entities\AbstractEntity;
 
-class SeriesDenialEntity extends AbstractEntity
+class SeriesEntity extends AbstractEntity
 {
 	/** @var string */
 	public string $canonicalUri = '';

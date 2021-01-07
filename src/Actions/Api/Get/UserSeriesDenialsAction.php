@@ -2,7 +2,7 @@
 namespace CodeKandis\BurningSeriesUsabilityEnhancerApi\Actions\Api\Get;
 
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Configurations\ConfigurationRegistry;
-use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\SeriesDenialEntity;
+use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\SeriesEntity;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\UriExtenders\SeriesDenialUriExtender;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\UserEntity;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Errors\UsersErrorCodes;
@@ -87,7 +87,7 @@ class UserSeriesDenialsAction extends AbstractAction
 	}
 
 	/**
-	 * @param SeriesDenialEntity[] $seriesDenials
+	 * @param SeriesEntity[] $seriesDenials
 	 */
 	private function extendUris( array $seriesDenials ): void
 	{
@@ -111,7 +111,7 @@ class UserSeriesDenialsAction extends AbstractAction
 	}
 
 	/**
-	 * @return SeriesDenialEntity[]
+	 * @return SeriesEntity[]
 	 * @throws PersistenceException
 	 */
 	private function readSeriesDenialsByUserId( UserEntity $user ): array

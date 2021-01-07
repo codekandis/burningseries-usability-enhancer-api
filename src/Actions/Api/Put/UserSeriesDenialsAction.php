@@ -2,7 +2,7 @@
 namespace CodeKandis\BurningSeriesUsabilityEnhancerApi\Actions\Api\Put;
 
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Configurations\ConfigurationRegistry;
-use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\SeriesDenialEntity;
+use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\SeriesEntity;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\UserEntity;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Errors\CommonErrorCodes;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Errors\CommonErrorMessages;
@@ -75,9 +75,9 @@ class UserSeriesDenialsAction extends AbstractAction
 		foreach ( $inputData[ 'seriesDenials' ] as $sentSeriesDenial )
 		{
 			/**
-			 * @var SeriesDenialEntity $seriesDenial
+			 * @var SeriesEntity $seriesDenial
 			 */
-			$seriesDenial = SeriesDenialEntity::fromObject( $sentSeriesDenial );
+			$seriesDenial = SeriesEntity::fromObject( $sentSeriesDenial );
 			$this->writeSeriesDenialByUserId( $seriesDenial, $user );
 		}
 
@@ -141,7 +141,7 @@ class UserSeriesDenialsAction extends AbstractAction
 	/**
 	 * @throws PersistenceException
 	 */
-	private function writeSeriesDenialByUserId( SeriesDenialEntity $seriesDenial, UserEntity $user ): void
+	private function writeSeriesDenialByUserId( SeriesEntity $seriesDenial, UserEntity $user ): void
 	{
 		$databaseConnector = $this->getDatabaseConnector();
 

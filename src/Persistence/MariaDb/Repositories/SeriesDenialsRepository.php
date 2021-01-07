@@ -1,17 +1,15 @@
 <?php declare( strict_types = 1 );
 namespace CodeKandis\BurningSeriesUsabilityEnhancerApi\Persistence\MariaDb\Repositories;
 
-use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\SeriesDenialEntity;
+use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\SeriesEntity;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\UserEntity;
 use CodeKandis\Tiphy\Persistence\MariaDb\Repositories\AbstractRepository;
 use CodeKandis\Tiphy\Persistence\PersistenceException;
-use DateTime;
-use DateTimeZone;
 
 class SeriesDenialsRepository extends AbstractRepository
 {
 	/**
-	 * @return SeriesDenialEntity[]
+	 * @return SeriesEntity[]
 	 * @throws PersistenceException
 	 */
 	public function readSeriesDenials(): array
@@ -28,8 +26,8 @@ class SeriesDenialsRepository extends AbstractRepository
 		try
 		{
 			$this->databaseConnector->beginTransaction();
-			/** @var SeriesDenialEntity[] $resultSet */
-			$resultSet = $this->databaseConnector->query( $query, null, SeriesDenialEntity::class );
+			/** @var SeriesEntity[] $resultSet */
+			$resultSet = $this->databaseConnector->query( $query, null, SeriesEntity::class );
 			$this->databaseConnector->commit();
 		}
 		catch ( PersistenceException $exception )
@@ -44,7 +42,7 @@ class SeriesDenialsRepository extends AbstractRepository
 	/**
 	 * @throws PersistenceException
 	 */
-	public function readSeriesDenialById( SeriesDenialEntity $seriesDenial ): ?SeriesDenialEntity
+	public function readSeriesDenialById( SeriesEntity $seriesDenial ): ?SeriesEntity
 	{
 		$query = <<< END
 			SELECT
@@ -64,8 +62,8 @@ class SeriesDenialsRepository extends AbstractRepository
 		try
 		{
 			$this->databaseConnector->beginTransaction();
-			/** @var SeriesDenialEntity $result */
-			$result = $this->databaseConnector->queryFirst( $query, $arguments, SeriesDenialEntity::class );
+			/** @var SeriesEntity $result */
+			$result = $this->databaseConnector->queryFirst( $query, $arguments, SeriesEntity::class );
 			$this->databaseConnector->commit();
 		}
 		catch ( PersistenceException $exception )
@@ -80,7 +78,7 @@ class SeriesDenialsRepository extends AbstractRepository
 	/**
 	 * @throws PersistenceException
 	 */
-	public function readSeriesDenialByName( SeriesDenialEntity $seriesDenial ): ?SeriesDenialEntity
+	public function readSeriesDenialByName( SeriesEntity $seriesDenial ): ?SeriesEntity
 	{
 		$query = <<< END
 			SELECT
@@ -100,8 +98,8 @@ class SeriesDenialsRepository extends AbstractRepository
 		try
 		{
 			$this->databaseConnector->beginTransaction();
-			/** @var SeriesDenialEntity $result */
-			$result = $this->databaseConnector->queryFirst( $query, $arguments, SeriesDenialEntity::class );
+			/** @var SeriesEntity $result */
+			$result = $this->databaseConnector->queryFirst( $query, $arguments, SeriesEntity::class );
 			$this->databaseConnector->commit();
 		}
 		catch ( PersistenceException $exception )
@@ -114,7 +112,7 @@ class SeriesDenialsRepository extends AbstractRepository
 	}
 
 	/**
-	 * @return SeriesDenialEntity[]
+	 * @return SeriesEntity[]
 	 * @throws PersistenceException
 	 */
 	public function readSeriesDenialsByUserId( UserEntity $user ): array
@@ -141,8 +139,8 @@ class SeriesDenialsRepository extends AbstractRepository
 		try
 		{
 			$this->databaseConnector->beginTransaction();
-			/** @var SeriesDenialEntity[] $resultSet */
-			$resultSet = $this->databaseConnector->query( $query, $arguments, SeriesDenialEntity::class );
+			/** @var SeriesEntity[] $resultSet */
+			$resultSet = $this->databaseConnector->query( $query, $arguments, SeriesEntity::class );
 			$this->databaseConnector->commit();
 		}
 		catch ( PersistenceException $exception )
@@ -157,7 +155,7 @@ class SeriesDenialsRepository extends AbstractRepository
 	/**
 	 * @throws PersistenceException
 	 */
-	public function writeSeriesDenialByUserId( SeriesDenialEntity $seriesDenialEntity, UserEntity $user ): void
+	public function writeSeriesDenialByUserId( SeriesEntity $seriesDenialEntity, UserEntity $user ): void
 	{
 		$query = <<< END
 			INSERT INTO
@@ -203,7 +201,7 @@ class SeriesDenialsRepository extends AbstractRepository
 	/**
 	 * @throws PersistenceException
 	 */
-	public function deleteSeriesDenialByUserId( SeriesDenialEntity $seriesDenial, UserEntity $user ): void
+	public function deleteSeriesDenialByUserId( SeriesEntity $seriesDenial, UserEntity $user ): void
 	{
 		$query = <<< END
 			DELETE

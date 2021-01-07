@@ -1,7 +1,7 @@
 <?php declare( strict_types = 1 );
 namespace CodeKandis\BurningSeriesUsabilityEnhancerApi\Persistence\MariaDb\Repositories;
 
-use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\SeriesDenialEntity;
+use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\SeriesEntity;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\StationEntity;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\UserEntity;
 use CodeKandis\Tiphy\Persistence\MariaDb\Repositories\AbstractRepository;
@@ -121,7 +121,7 @@ class UsersRepository extends AbstractRepository
 	 * @return UserEntity[]
 	 * @throws PersistenceException
 	 */
-	public function readUsersBySeriesDenialId( SeriesDenialEntity $seriesDenial ): array
+	public function readUsersBySeriesDenialId( SeriesEntity $seriesDenial ): array
 	{
 		$query = <<< END
 			SELECT
