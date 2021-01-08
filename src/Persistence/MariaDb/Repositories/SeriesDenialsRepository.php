@@ -3,8 +3,10 @@ namespace CodeKandis\BurningSeriesUsabilityEnhancerApi\Persistence\MariaDb\Repos
 
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\SeriesEntity;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\UserEntity;
+use CodeKandis\Tiphy\Persistence\MariaDb\PreparedStatementInArrayHelper;
 use CodeKandis\Tiphy\Persistence\MariaDb\Repositories\AbstractRepository;
 use CodeKandis\Tiphy\Persistence\PersistenceException;
+use function var_dump;
 
 class SeriesDenialsRepository extends AbstractRepository
 {
@@ -135,6 +137,59 @@ class SeriesDenialsRepository extends AbstractRepository
 		$arguments = [
 			'userId' => $user->id
 		];
+
+		try
+		{
+			$this->databaseConnector->beginTransaction();
+			/** @var SeriesEntity[] $resultSet */
+			$resultSet = $this->databaseConnector->query( $query, $arguments, SeriesEntity::class );
+			$this->databaseConnector->commit();
+		}
+		catch ( PersistenceException $exception )
+		{
+			$this->databaseConnector->rollback();
+			throw $exception;
+		}
+
+		return $resultSet;
+	}
+
+	/**
+	 * @param SeriesEntity[] $series
+	 * @return SeriesEntity[]
+	 * @throws PersistenceException
+	 */
+	public function readSeriesDenialsFilteredByUserId( array $series, UserEntity $user ): array
+	{
+		$inArrayHelper = new PreparedStatementInArrayHelper(
+			'seriesName',
+			array_map(
+				fn( SeriesEntity $series ) => $series->name,
+				$series
+			)
+		);
+
+		$query = <<< END
+			SELECT
+				`seriesDenials`.*
+			FROM
+				`seriesDenials`
+			INNER JOIN
+				`users_seriesDenials`
+				ON
+				`users_seriesDenials`.`userId` = :userId
+			WHERE
+			    `seriesDenials`.name IN ( {$inArrayHelper->getNamedPlaceholders()} )
+			    AND
+				`seriesDenials`.`id` = `users_seriesDenials`.`seriesDenialId`
+			ORDER BY
+				`seriesDenials`.`createdOn` DESC;
+		END;
+
+		$arguments = [
+						 'userId' => $user->id
+					 ]
+					 + $inArrayHelper->getArguments();
 
 		try
 		{
