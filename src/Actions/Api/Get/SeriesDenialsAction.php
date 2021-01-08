@@ -2,7 +2,7 @@
 namespace CodeKandis\BurningSeriesUsabilityEnhancerApi\Actions\Api\Get;
 
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Configurations\ConfigurationRegistry;
-use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\SeriesDenialEntity;
+use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\SeriesEntity;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\UriExtenders\SeriesDenialUriExtender;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Http\UriBuilders\ApiUriBuilder;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Http\UriBuilders\ApiUriBuilderInterface;
@@ -59,7 +59,7 @@ class SeriesDenialsAction extends AbstractAction
 	}
 
 	/**
-	 * @param SeriesDenialEntity[] $seriesDenials
+	 * @param SeriesEntity[] $seriesDenials
 	 */
 	private function extendUris( array $seriesDenials ): void
 	{
@@ -72,7 +72,7 @@ class SeriesDenialsAction extends AbstractAction
 	}
 
 	/**
-	 * @return SeriesDenialEntity[]
+	 * @return SeriesEntity[]
 	 * @throws PersistenceException
 	 */
 	private function readSeriesDenials(): array

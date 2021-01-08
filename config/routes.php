@@ -18,6 +18,9 @@ return [
 		Methods::GET => Api\Get\UserSeriesDenialsAction::class,
 		Methods::PUT => Api\Put\UserSeriesDenialAction::class
 	],
+	'^/users/(?<userId>[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})/series-denials/filtered$'                                                       => [
+		Methods::PUT => Api\Put\UserSeriesDenialsFilteredAction::class
+	],
 	'^/users/(?<userId>[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})/series-denials/plain$'                                                          => [
 		Methods::PUT => Api\Put\UserSeriesDenialsAction::class
 	],

@@ -21,10 +21,11 @@ use CodeKandis\Tiphy\Persistence\PersistenceException;
 use CodeKandis\Tiphy\Throwables\ErrorInformation;
 use JsonException;
 use ReflectionException;
+use function array_map;
 use function is_object;
 use function strtolower;
 
-class UserSeriesDenialsAction extends AbstractAction
+class UserSeriesDenialsFilteredAction extends AbstractAction
 {
 	/** @var ConnectorInterface */
 	private ConnectorInterface $databaseConnector;
@@ -72,16 +73,19 @@ class UserSeriesDenialsAction extends AbstractAction
 			return;
 		}
 
-		foreach ( $inputData[ 'seriesDenials' ] as $sentSeriesDenial )
-		{
-			/**
-			 * @var SeriesEntity $seriesDenial
-			 */
-			$seriesDenial = SeriesEntity::fromObject( $sentSeriesDenial );
-			$this->writeSeriesDenialByUserId( $seriesDenial, $user );
-		}
+		/**
+		 * @var SeriesEntity[] $series
+		 */
+		$series = array_map(
+			fn( $sentSeries ) => SeriesEntity::fromObject( $sentSeries ),
+			$inputData[ 'series' ]
+		);
 
-		( new JsonResponder( StatusCodes::OK, null ) )
+		$responderData = [
+			'seriesDenials' => $this->readSeriesDenialsFilteredByUserId( $series, $user )
+		];
+
+		( new JsonResponder( StatusCodes::OK, $responderData ) )
 			->respond();
 	}
 
@@ -104,7 +108,7 @@ class UserSeriesDenialsAction extends AbstractAction
 
 		$bodyData     = [];
 		$requiredKeys = [
-			'seriesDenials'
+			'series'
 		];
 
 		$isValid = true;
@@ -139,13 +143,15 @@ class UserSeriesDenialsAction extends AbstractAction
 	}
 
 	/**
+	 * @param SeriesEntity[] $series
+	 * @return SeriesEntity[]
 	 * @throws PersistenceException
 	 */
-	private function writeSeriesDenialByUserId( SeriesEntity $seriesDenial, UserEntity $user ): void
+	private function readSeriesDenialsFilteredByUserId( array $series, UserEntity $user ): array
 	{
 		$databaseConnector = $this->getDatabaseConnector();
 
-		( new SeriesDenialsRepository( $databaseConnector ) )
-			->writeSeriesDenialByUserId( $seriesDenial, $user );
+		return ( new SeriesDenialsRepository( $databaseConnector ) )
+			->readSeriesDenialsFilteredByUserId( $series, $user );
 	}
 }

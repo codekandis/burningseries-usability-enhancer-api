@@ -2,7 +2,7 @@
 namespace CodeKandis\BurningSeriesUsabilityEnhancerApi\Actions\Api\Delete;
 
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Configurations\ConfigurationRegistry;
-use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\SeriesDenialEntity;
+use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\SeriesEntity;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\UserEntity;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Errors\SeriesDenialsErrorCodes;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Errors\SeriesDenialsErrorMessages;
@@ -55,7 +55,7 @@ class UserSeriesDenialAction extends AbstractAction
 			return;
 		}
 
-		$requestedSeriesDenial     = new SeriesDenialEntity();
+		$requestedSeriesDenial     = new SeriesEntity();
 		$requestedSeriesDenial->id = $inputData[ 'seriesDenialId' ];
 		$seriesDenial              = $this->readSeriesDenialById( $requestedSeriesDenial );
 
@@ -96,7 +96,7 @@ class UserSeriesDenialAction extends AbstractAction
 	/**
 	 * @throws PersistenceException
 	 */
-	private function readSeriesDenialById( SeriesDenialEntity $requestedSeriesDenial ): ?SeriesDenialEntity
+	private function readSeriesDenialById( SeriesEntity $requestedSeriesDenial ): ?SeriesEntity
 	{
 		$databaseConnector = $this->getDatabaseConnector();
 
@@ -107,7 +107,7 @@ class UserSeriesDenialAction extends AbstractAction
 	/**
 	 * @throws PersistenceException
 	 */
-	private function deleteSeriesDenialByUserId( UserEntity $user, SeriesDenialEntity $seriesDenial ): void
+	private function deleteSeriesDenialByUserId( UserEntity $user, SeriesEntity $seriesDenial ): void
 	{
 		$databaseConnector = $this->getDatabaseConnector();
 
