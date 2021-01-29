@@ -9,7 +9,7 @@ class ConfigurationRegistry extends AbstractConfigurationRegistry
 	protected function initialize(): void
 	{
 		$this->setSentryClientConfigurationPath( dirname( __DIR__, 2 ) . '/config/sentryClient.php' );
-		$this->setRoutesConfigurationPath( dirname( __DIR__, 2 ) . '/config/routes.php' );
+		$this->setRoutesConfigurationPath( __DIR__ . '/Plain/routes.php' );
 		$this->setPersistenceConfigurationPath( dirname( __DIR__, 2 ) . '/config/persistence.php' );
 		$this->setUriBuilderConfigurationPath( dirname( __DIR__, 2 ) . '/config/uriBuilder.php' );
 	}
