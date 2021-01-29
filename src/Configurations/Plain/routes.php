@@ -1,5 +1,5 @@
 <?php declare( strict_types = 1 );
-namespace CodeKandis\BurningSeriesUsabilityEnhancerApi\Configurations;
+namespace CodeKandis\BurningSeriesUsabilityEnhancerApi\Configurations\Plain;
 
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Actions\Api;
 use CodeKandis\Tiphy\Http\Requests\Methods;
