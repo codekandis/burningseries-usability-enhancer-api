@@ -1,7 +1,7 @@
 <?php declare( strict_types = 1 );
 namespace CodeKandis\BurningSeriesUsabilityEnhancerApi\Actions\Api\Delete;
 
-use CodeKandis\BurningSeriesUsabilityEnhancerApi\Configurations\ConfigurationRegistry;
+use CodeKandis\BurningSeriesUsabilityEnhancerApi\Actions\AbstractWithDatabaseConnectorAction;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\SeriesEntity;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\UserEntity;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Errors\SeriesDenialsErrorCodes;
@@ -10,30 +10,14 @@ use CodeKandis\BurningSeriesUsabilityEnhancerApi\Errors\UsersErrorCodes;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Errors\UsersErrorMessages;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Persistence\MariaDb\Repositories\SeriesDenialsRepository;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Persistence\MariaDb\Repositories\UsersRepository;
-use CodeKandis\Tiphy\Actions\AbstractAction;
 use CodeKandis\Tiphy\Http\Responses\JsonResponder;
 use CodeKandis\Tiphy\Http\Responses\StatusCodes;
-use CodeKandis\Tiphy\Persistence\MariaDb\Connector;
-use CodeKandis\Tiphy\Persistence\MariaDb\ConnectorInterface;
 use CodeKandis\Tiphy\Persistence\PersistenceException;
 use CodeKandis\Tiphy\Throwables\ErrorInformation;
 use JsonException;
 
-class UserSeriesDenialAction extends AbstractAction
+class UserSeriesDenialAction extends AbstractWithDatabaseConnectorAction
 {
-	/** @var ConnectorInterface */
-	private ConnectorInterface $databaseConnector;
-
-	private function getDatabaseConnector(): ConnectorInterface
-	{
-		return $this->databaseConnector
-			   ?? $this->databaseConnector =
-				   new Connector(
-					   ConfigurationRegistry::_()
-											->getPersistenceConfiguration()
-				   );
-	}
-
 	/**
 	 * @throws PersistenceException
 	 * @throws JsonException
@@ -61,7 +45,7 @@ class UserSeriesDenialAction extends AbstractAction
 
 		if ( null === $seriesDenial )
 		{
-			$errorInformation = new ErrorInformation( SeriesDenialsErrorCodes::FAVORITE_UNKNOWN, SeriesDenialsErrorMessages::FAVORITE_UNKNOWN, $inputData );
+			$errorInformation = new ErrorInformation( SeriesDenialsErrorCodes::SERIES_UNKNOWN, SeriesDenialsErrorMessages::SERIES_UNKNOWN, $inputData );
 			( new JsonResponder( StatusCodes::NOT_FOUND, null, $errorInformation ) )
 				->respond();
 
@@ -98,9 +82,9 @@ class UserSeriesDenialAction extends AbstractAction
 	 */
 	private function readSeriesDenialById( SeriesEntity $requestedSeriesDenial ): ?SeriesEntity
 	{
-		$databaseConnector = $this->getDatabaseConnector();
-
-		return ( new SeriesDenialsRepository( $databaseConnector ) )
+		return ( new SeriesDenialsRepository(
+			$this->getDatabaseConnector()
+		) )
 			->readSeriesDenialById( $requestedSeriesDenial );
 	}
 
@@ -109,9 +93,9 @@ class UserSeriesDenialAction extends AbstractAction
 	 */
 	private function deleteSeriesDenialByUserId( UserEntity $user, SeriesEntity $seriesDenial ): void
 	{
-		$databaseConnector = $this->getDatabaseConnector();
-
-		( new SeriesDenialsRepository( $databaseConnector ) )
+		( new SeriesDenialsRepository(
+			$this->getDatabaseConnector()
+		) )
 			->deleteSeriesDenialByUserId( $seriesDenial, $user );
 	}
 }
