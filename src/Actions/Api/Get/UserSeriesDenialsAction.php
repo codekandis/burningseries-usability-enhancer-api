@@ -1,52 +1,22 @@
 <?php declare( strict_types = 1 );
 namespace CodeKandis\BurningSeriesUsabilityEnhancerApi\Actions\Api\Get;
 
-use CodeKandis\BurningSeriesUsabilityEnhancerApi\Configurations\ConfigurationRegistry;
+use CodeKandis\BurningSeriesUsabilityEnhancerApi\Actions\AbstractWithDatabaseConnectorAndApiUriBuilderAction;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\SeriesEntity;
-use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\UriExtenders\SeriesDenialUriExtender;
+use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\UriExtenders\SeriesDenialApiUriExtender;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\UserEntity;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Errors\UsersErrorCodes;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Errors\UsersErrorMessages;
-use CodeKandis\BurningSeriesUsabilityEnhancerApi\Http\UriBuilders\ApiUriBuilder;
-use CodeKandis\BurningSeriesUsabilityEnhancerApi\Http\UriBuilders\ApiUriBuilderInterface;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Persistence\MariaDb\Repositories\SeriesDenialsRepository;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Persistence\MariaDb\Repositories\UsersRepository;
-use CodeKandis\Tiphy\Actions\AbstractAction;
 use CodeKandis\Tiphy\Http\Responses\JsonResponder;
 use CodeKandis\Tiphy\Http\Responses\StatusCodes;
-use CodeKandis\Tiphy\Persistence\MariaDb\Connector;
-use CodeKandis\Tiphy\Persistence\MariaDb\ConnectorInterface;
 use CodeKandis\Tiphy\Persistence\PersistenceException;
 use CodeKandis\Tiphy\Throwables\ErrorInformation;
 use JsonException;
 
-class UserSeriesDenialsAction extends AbstractAction
+class UserSeriesDenialsAction extends AbstractWithDatabaseConnectorAndApiUriBuilderAction
 {
-	/** @var ConnectorInterface */
-	private ConnectorInterface $databaseConnector;
-
-	/** @var ApiUriBuilderInterface */
-	private ApiUriBuilderInterface $uriBuilder;
-
-	private function getDatabaseConnector(): ConnectorInterface
-	{
-		return $this->databaseConnector
-			   ?? $this->databaseConnector =
-				   new Connector(
-					   ConfigurationRegistry::_()
-											->getPersistenceConfiguration()
-				   );
-	}
-
-	private function getUriBuilder(): ApiUriBuilderInterface
-	{
-		return $this->uriBuilder
-			   ?? $this->uriBuilder =
-				   new ApiUriBuilder(
-					   ConfigurationRegistry::_()->getUriBuilderConfiguration()
-				   );
-	}
-
 	/**
 	 * @throws PersistenceException
 	 * @throws JsonException
@@ -91,10 +61,10 @@ class UserSeriesDenialsAction extends AbstractAction
 	 */
 	private function extendUris( array $seriesDenials ): void
 	{
-		$uriBuilder = $this->getUriBuilder();
+		$apiUriBuilder = $this->getApiUriBuilder();
 		foreach ( $seriesDenials as $seriesDenial )
 		{
-			( new SeriesDenialUriExtender( $uriBuilder, $seriesDenial ) )
+			( new SeriesDenialApiUriExtender( $apiUriBuilder, $seriesDenial ) )
 				->extend();
 		}
 	}
@@ -104,9 +74,9 @@ class UserSeriesDenialsAction extends AbstractAction
 	 */
 	private function readUserById( UserEntity $requestedUser ): ?UserEntity
 	{
-		$databaseConnector = $this->getDatabaseConnector();
-
-		return ( new UsersRepository( $databaseConnector ) )
+		return ( new UsersRepository(
+			$this->getDatabaseConnector()
+		) )
 			->readUserById( $requestedUser );
 	}
 
@@ -116,9 +86,9 @@ class UserSeriesDenialsAction extends AbstractAction
 	 */
 	private function readSeriesDenialsByUserId( UserEntity $user ): array
 	{
-		$databaseConnector = $this->getDatabaseConnector();
-
-		return ( new SeriesDenialsRepository( $databaseConnector ) )
+		return ( new SeriesDenialsRepository(
+			$this->getDatabaseConnector()
+		) )
 			->readSeriesDenialsByUserId( $user );
 	}
 }
