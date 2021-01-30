@@ -1,50 +1,20 @@
 <?php declare( strict_types = 1 );
 namespace CodeKandis\BurningSeriesUsabilityEnhancerApi\Actions\Api\Get;
 
-use CodeKandis\BurningSeriesUsabilityEnhancerApi\Configurations\ConfigurationRegistry;
-use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\UriExtenders\UserUriExtender;
+use CodeKandis\BurningSeriesUsabilityEnhancerApi\Actions\AbstractWithDatabaseConnectorAndApiUriBuilderAction;
+use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\UriExtenders\UserApiUriExtender;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\UserEntity;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Errors\UsersErrorCodes;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Errors\UsersErrorMessages;
-use CodeKandis\BurningSeriesUsabilityEnhancerApi\Http\UriBuilders\ApiUriBuilder;
-use CodeKandis\BurningSeriesUsabilityEnhancerApi\Http\UriBuilders\ApiUriBuilderInterface;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Persistence\MariaDb\Repositories\UsersRepository;
-use CodeKandis\Tiphy\Actions\AbstractAction;
 use CodeKandis\Tiphy\Http\Responses\JsonResponder;
 use CodeKandis\Tiphy\Http\Responses\StatusCodes;
-use CodeKandis\Tiphy\Persistence\MariaDb\Connector;
-use CodeKandis\Tiphy\Persistence\MariaDb\ConnectorInterface;
 use CodeKandis\Tiphy\Persistence\PersistenceException;
 use CodeKandis\Tiphy\Throwables\ErrorInformation;
 use JsonException;
 
-class UserAction extends AbstractAction
+class UserAction extends AbstractWithDatabaseConnectorAndApiUriBuilderAction
 {
-	/** @var ConnectorInterface */
-	private ConnectorInterface $databaseConnector;
-
-	/** @var ApiUriBuilderInterface */
-	private ApiUriBuilderInterface $uriBuilder;
-
-	private function getDatabaseConnector(): ConnectorInterface
-	{
-		return $this->databaseConnector
-			   ?? $this->databaseConnector =
-				   new Connector(
-					   ConfigurationRegistry::_()
-											->getPersistenceConfiguration()
-				   );
-	}
-
-	private function getUriBuilder(): ApiUriBuilderInterface
-	{
-		return $this->uriBuilder
-			   ?? $this->uriBuilder =
-				   new ApiUriBuilder(
-					   ConfigurationRegistry::_()->getUriBuilderConfiguration()
-				   );
-	}
-
 	/**
 	 * @throws PersistenceException
 	 * @throws JsonException
@@ -85,8 +55,10 @@ class UserAction extends AbstractAction
 
 	private function extendUris( UserEntity $user ): void
 	{
-		$uriBuilder = $this->getUriBuilder();
-		( new UserUriExtender( $uriBuilder, $user ) )
+		( new UserApiUriExtender(
+			$this->getApiUriBuilder(),
+			$user
+		) )
 			->extend();
 	}
 
@@ -95,9 +67,9 @@ class UserAction extends AbstractAction
 	 */
 	private function readUserById( UserEntity $requestedUser ): ?UserEntity
 	{
-		$databaseConnector = $this->getDatabaseConnector();
-
-		return ( new UsersRepository( $databaseConnector ) )
+		return ( new UsersRepository(
+			$this->getDatabaseConnector()
+		) )
 			->readUserById( $requestedUser );
 	}
 }
