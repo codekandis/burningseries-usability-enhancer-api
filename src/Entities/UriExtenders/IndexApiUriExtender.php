@@ -4,14 +4,14 @@ namespace CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\UriExtenders;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\IndexEntity;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Http\UriBuilders\ApiUriBuilderInterface;
 
-class IndexUriExtender extends AbstractUriExtender
+class IndexApiUriExtender extends AbstractApiUriExtender
 {
 	/** @var IndexEntity */
 	private IndexEntity $index;
 
-	public function __construct( ApiUriBuilderInterface $uriBuilder, IndexEntity $index )
+	public function __construct( ApiUriBuilderInterface $apiUriBuilder, IndexEntity $index )
 	{
-		parent::__construct( $uriBuilder );
+		parent::__construct( $apiUriBuilder );
 		$this->index = $index;
 	}
 
@@ -24,16 +24,16 @@ class IndexUriExtender extends AbstractUriExtender
 
 	private function addCanonicalUri(): void
 	{
-		$this->index->canonicalUri = $this->uriBuilder->buildIndexUri();
+		$this->index->canonicalUri = $this->apiUriBuilder->buildIndexUri();
 	}
 
 	private function addUsersUri(): void
 	{
-		$this->index->usersUri = $this->uriBuilder->buildUsersUri();
+		$this->index->usersUri = $this->apiUriBuilder->buildUsersUri();
 	}
 
 	private function addSeriesDenialsUri(): void
 	{
-		$this->index->seriesDenialsUri = $this->uriBuilder->buildSeriesDenialsUri();
+		$this->index->seriesDenialsUri = $this->apiUriBuilder->buildSeriesDenialsUri();
 	}
 }
