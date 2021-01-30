@@ -4,14 +4,14 @@ namespace CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\UriExtenders;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\SeriesEntity;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Http\UriBuilders\ApiUriBuilderInterface;
 
-class SeriesDenialUriExtender extends AbstractUriExtender
+class SeriesDenialApiUriExtender extends AbstractApiUriExtender
 {
 	/** @var SeriesEntity */
 	private SeriesEntity $seriesDenial;
 
-	public function __construct( ApiUriBuilderInterface $uriBuilder, SeriesEntity $seriesDenial )
+	public function __construct( ApiUriBuilderInterface $apiUriBuilder, SeriesEntity $seriesDenial )
 	{
-		parent::__construct( $uriBuilder );
+		parent::__construct( $apiUriBuilder );
 		$this->seriesDenial = $seriesDenial;
 	}
 
@@ -23,11 +23,11 @@ class SeriesDenialUriExtender extends AbstractUriExtender
 
 	private function addCanonicalUri(): void
 	{
-		$this->seriesDenial->canonicalUri = $this->uriBuilder->buildSeriesDenialUri( $this->seriesDenial->id );
+		$this->seriesDenial->canonicalUri = $this->apiUriBuilder->buildSeriesDenialUri( $this->seriesDenial->id );
 	}
 
 	private function addSeriesDenialUsersUri(): void
 	{
-		$this->seriesDenial->usersUri = $this->uriBuilder->buildSeriesDenialUsersUri( $this->seriesDenial->id );
+		$this->seriesDenial->usersUri = $this->apiUriBuilder->buildSeriesDenialUsersUri( $this->seriesDenial->id );
 	}
 }

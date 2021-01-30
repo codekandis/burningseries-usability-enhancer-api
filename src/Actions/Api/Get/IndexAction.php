@@ -1,30 +1,15 @@
 <?php declare( strict_types = 1 );
 namespace CodeKandis\BurningSeriesUsabilityEnhancerApi\Actions\Api\Get;
 
-use CodeKandis\BurningSeriesUsabilityEnhancerApi\Configurations\ConfigurationRegistry;
+use CodeKandis\BurningSeriesUsabilityEnhancerApi\Actions\AbstractWithApiUriBuilderAction;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\IndexEntity;
-use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\UriExtenders\IndexUriExtender;
-use CodeKandis\BurningSeriesUsabilityEnhancerApi\Http\UriBuilders\ApiUriBuilder;
-use CodeKandis\BurningSeriesUsabilityEnhancerApi\Http\UriBuilders\ApiUriBuilderInterface;
-use CodeKandis\Tiphy\Actions\AbstractAction;
+use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\UriExtenders\IndexApiUriExtender;
 use CodeKandis\Tiphy\Http\Responses\JsonResponder;
 use CodeKandis\Tiphy\Http\Responses\StatusCodes;
 use JsonException;
 
-class IndexAction extends AbstractAction
+class IndexAction extends AbstractWithApiUriBuilderAction
 {
-	/** @var ApiUriBuilderInterface */
-	private ApiUriBuilderInterface $uriBuilder;
-
-	private function getUriBuilder(): ApiUriBuilderInterface
-	{
-		return $this->uriBuilder
-			   ?? $this->uriBuilder =
-				   new ApiUriBuilder(
-					   ConfigurationRegistry::_()->getUriBuilderConfiguration()
-				   );
-	}
-
 	/**
 	 * @throws JsonException
 	 */
@@ -42,8 +27,10 @@ class IndexAction extends AbstractAction
 
 	private function extendUris( $index ): void
 	{
-		$uriBuilder = $this->getUriBuilder();
-		( new IndexUriExtender( $uriBuilder, $index ) )
+		( new IndexApiUriExtender(
+			$this->getApiUriBuilder(),
+			$index
+		) )
 			->extend();
 	}
 }

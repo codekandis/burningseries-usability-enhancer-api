@@ -1,7 +1,7 @@
 <?php declare( strict_types = 1 );
 namespace CodeKandis\BurningSeriesUsabilityEnhancerApi\Actions\Api\Put;
 
-use CodeKandis\BurningSeriesUsabilityEnhancerApi\Configurations\ConfigurationRegistry;
+use CodeKandis\BurningSeriesUsabilityEnhancerApi\Actions\AbstractWithDatabaseConnectorAction;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\SeriesEntity;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\UserEntity;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Errors\CommonErrorCodes;
@@ -10,13 +10,10 @@ use CodeKandis\BurningSeriesUsabilityEnhancerApi\Errors\UsersErrorCodes;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Errors\UsersErrorMessages;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Persistence\MariaDb\Repositories\SeriesDenialsRepository;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Persistence\MariaDb\Repositories\UsersRepository;
-use CodeKandis\Tiphy\Actions\AbstractAction;
 use CodeKandis\Tiphy\Http\ContentTypes;
 use CodeKandis\Tiphy\Http\Requests\BadRequestException;
 use CodeKandis\Tiphy\Http\Responses\JsonResponder;
 use CodeKandis\Tiphy\Http\Responses\StatusCodes;
-use CodeKandis\Tiphy\Persistence\MariaDb\Connector;
-use CodeKandis\Tiphy\Persistence\MariaDb\ConnectorInterface;
 use CodeKandis\Tiphy\Persistence\PersistenceException;
 use CodeKandis\Tiphy\Throwables\ErrorInformation;
 use JsonException;
@@ -25,21 +22,8 @@ use function array_map;
 use function is_object;
 use function strtolower;
 
-class UserSeriesDenialsFilteredAction extends AbstractAction
+class UserSeriesDenialsFilteredAction extends AbstractWithDatabaseConnectorAction
 {
-	/** @var ConnectorInterface */
-	private ConnectorInterface $databaseConnector;
-
-	private function getDatabaseConnector(): ConnectorInterface
-	{
-		return $this->databaseConnector
-			   ?? $this->databaseConnector =
-				   new Connector(
-					   ConfigurationRegistry::_()
-											->getPersistenceConfiguration()
-				   );
-	}
-
 	/**
 	 * @throws PersistenceException
 	 * @throws ReflectionException
@@ -136,9 +120,9 @@ class UserSeriesDenialsFilteredAction extends AbstractAction
 	 */
 	private function readUser( UserEntity $requestedUser ): ?UserEntity
 	{
-		$databaseConnector = $this->getDatabaseConnector();
-
-		return ( new UsersRepository( $databaseConnector ) )
+		return ( new UsersRepository(
+			$this->getDatabaseConnector()
+		) )
 			->readUserById( $requestedUser );
 	}
 
@@ -149,9 +133,9 @@ class UserSeriesDenialsFilteredAction extends AbstractAction
 	 */
 	private function readSeriesDenialsFilteredByUserId( array $series, UserEntity $user ): array
 	{
-		$databaseConnector = $this->getDatabaseConnector();
-
-		return ( new SeriesDenialsRepository( $databaseConnector ) )
+		return ( new SeriesDenialsRepository(
+			$this->getDatabaseConnector()
+		) )
 			->readSeriesDenialsFilteredByUserId( $series, $user );
 	}
 }

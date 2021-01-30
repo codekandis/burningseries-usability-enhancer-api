@@ -4,13 +4,13 @@ namespace CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\UriExtenders;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Http\UriBuilders\ApiUriBuilderInterface;
 use CodeKandis\Tiphy\Entities\UriExtenders\UriExtenderInterface;
 
-abstract class AbstractUriExtender implements UriExtenderInterface
+abstract class AbstractApiUriExtender implements UriExtenderInterface
 {
 	/** @var ApiUriBuilderInterface */
-	protected ApiUriBuilderInterface $uriBuilder;
+	protected ApiUriBuilderInterface $apiUriBuilder;
 
-	public function __construct( ApiUriBuilderInterface $uriBuilder )
+	public function __construct( ApiUriBuilderInterface $apiUriBuilder )
 	{
-		$this->uriBuilder = $uriBuilder;
+		$this->apiUriBuilder = $apiUriBuilder;
 	}
 }

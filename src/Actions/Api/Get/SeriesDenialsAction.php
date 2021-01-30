@@ -1,47 +1,17 @@
 <?php declare( strict_types = 1 );
 namespace CodeKandis\BurningSeriesUsabilityEnhancerApi\Actions\Api\Get;
 
-use CodeKandis\BurningSeriesUsabilityEnhancerApi\Configurations\ConfigurationRegistry;
+use CodeKandis\BurningSeriesUsabilityEnhancerApi\Actions\AbstractWithDatabaseConnectorAndApiUriBuilderAction;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\SeriesEntity;
-use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\UriExtenders\SeriesDenialUriExtender;
-use CodeKandis\BurningSeriesUsabilityEnhancerApi\Http\UriBuilders\ApiUriBuilder;
-use CodeKandis\BurningSeriesUsabilityEnhancerApi\Http\UriBuilders\ApiUriBuilderInterface;
+use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\UriExtenders\SeriesDenialApiUriExtender;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Persistence\MariaDb\Repositories\SeriesDenialsRepository;
-use CodeKandis\Tiphy\Actions\AbstractAction;
 use CodeKandis\Tiphy\Http\Responses\JsonResponder;
 use CodeKandis\Tiphy\Http\Responses\StatusCodes;
-use CodeKandis\Tiphy\Persistence\MariaDb\Connector;
-use CodeKandis\Tiphy\Persistence\MariaDb\ConnectorInterface;
 use CodeKandis\Tiphy\Persistence\PersistenceException;
 use JsonException;
 
-class SeriesDenialsAction extends AbstractAction
+class SeriesDenialsAction extends AbstractWithDatabaseConnectorAndApiUriBuilderAction
 {
-	/** @var ConnectorInterface */
-	private ConnectorInterface $databaseConnector;
-
-	/** @var ApiUriBuilderInterface */
-	private ApiUriBuilderInterface $uriBuilder;
-
-	private function getDatabaseConnector(): ConnectorInterface
-	{
-		return $this->databaseConnector
-			   ?? $this->databaseConnector =
-				   new Connector(
-					   ConfigurationRegistry::_()
-											->getPersistenceConfiguration()
-				   );
-	}
-
-	private function getUriBuilder(): ApiUriBuilderInterface
-	{
-		return $this->uriBuilder
-			   ?? $this->uriBuilder =
-				   new ApiUriBuilder(
-					   ConfigurationRegistry::_()->getUriBuilderConfiguration()
-				   );
-	}
-
 	/**
 	 * @throws PersistenceException
 	 * @throws JsonException
@@ -63,10 +33,10 @@ class SeriesDenialsAction extends AbstractAction
 	 */
 	private function extendUris( array $seriesDenials ): void
 	{
-		$uriBuilder = $this->getUriBuilder();
+		$apiUriBuilder = $this->getApiUriBuilder();
 		foreach ( $seriesDenials as $seriesDenial )
 		{
-			( new SeriesDenialUriExtender( $uriBuilder, $seriesDenial ) )
+			( new SeriesDenialApiUriExtender( $apiUriBuilder, $seriesDenial ) )
 				->extend();
 		}
 	}
@@ -77,9 +47,9 @@ class SeriesDenialsAction extends AbstractAction
 	 */
 	private function readSeriesDenials(): array
 	{
-		$databaseConnector = $this->getDatabaseConnector();
-
-		return ( new SeriesDenialsRepository( $databaseConnector ) )
+		return ( new SeriesDenialsRepository(
+			$this->getDatabaseConnector()
+		) )
 			->readSeriesDenials();
 	}
 }
