@@ -24,7 +24,8 @@ class ConfigurationRegistry extends AbstractConfigurationRegistry
 	private function initializeRoutesConfiguration(): void
 	{
 		$this->setPlainRoutesConfiguration(
-			require __DIR__ . '/Plain/routes.php'
+			( require dirname( __DIR__, 2 ) . '/config/routes.php' )
+			+ ( require __DIR__ . '/Plain/routes.php' )
 		);
 	}
 
