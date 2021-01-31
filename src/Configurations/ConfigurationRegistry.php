@@ -24,8 +24,8 @@ class ConfigurationRegistry extends AbstractConfigurationRegistry
 	private function initializeRoutesConfiguration(): void
 	{
 		$this->setPlainRoutesConfiguration(
-			( require dirname( __DIR__, 2 ) . '/config/routes.php' )
-			+ ( require __DIR__ . '/Plain/routes.php' )
+			( require __DIR__ . '/Plain/routes.php' )
+			+ ( require dirname( __DIR__, 2 ) . '/config/routes.php' )
 		);
 	}
 
@@ -39,8 +39,8 @@ class ConfigurationRegistry extends AbstractConfigurationRegistry
 	private function initializeUriBuilderConfiguration(): void
 	{
 		$this->setPlainUriBuilderConfiguration(
-			( require dirname( __DIR__, 2 ) . '/config/uriBuilder.php' )
-			+ ( require __DIR__ . '/Plain/uriBuilder.php' )
+			( require __DIR__ . '/Plain/uriBuilder.php' )
+			+ ( require dirname( __DIR__, 2 ) . '/config/uriBuilder.php' )
 		);
 	}
 }
