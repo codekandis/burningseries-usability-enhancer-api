@@ -17,7 +17,8 @@ class ConfigurationRegistry extends AbstractConfigurationRegistry
 	private function initializeSentryClientConfiguration(): void
 	{
 		$this->setPlainSentryClientConfiguration(
-			require dirname( __DIR__, 2 ) . '/config/sentryClient.php'
+			( require __DIR__ . '/Plain/sentryClient.php' )
+			+ ( require dirname( __DIR__, 2 ) . '/config/sentryClient.php' )
 		);
 	}
 
