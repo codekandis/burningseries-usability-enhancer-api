@@ -77,42 +77,6 @@ class SeriesFavoritesRepository extends AbstractRepository
 	}
 
 	/**
-	 * @throws PersistenceException
-	 */
-	public function readSeriesFavoriteByName( SeriesEntity $seriesFavorite ): ?SeriesEntity
-	{
-		$query = <<< END
-			SELECT
-				`seriesFavorites`.*
-			FROM
-				`seriesFavorites`
-			WHERE
-				`seriesFavorites`.`name` = :name
-			LIMIT
-				0, 1;
-		END;
-
-		$arguments = [
-			'name' => $seriesFavorite->name
-		];
-
-		try
-		{
-			$this->databaseConnector->beginTransaction();
-			/** @var SeriesEntity $result */
-			$result = $this->databaseConnector->queryFirst( $query, $arguments, SeriesEntity::class );
-			$this->databaseConnector->commit();
-		}
-		catch ( PersistenceException $exception )
-		{
-			$this->databaseConnector->rollback();
-			throw $exception;
-		}
-
-		return $result;
-	}
-
-	/**
 	 * @return SeriesEntity[]
 	 * @throws PersistenceException
 	 */

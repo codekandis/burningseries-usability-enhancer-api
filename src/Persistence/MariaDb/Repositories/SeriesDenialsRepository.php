@@ -77,42 +77,6 @@ class SeriesDenialsRepository extends AbstractRepository
 	}
 
 	/**
-	 * @throws PersistenceException
-	 */
-	public function readSeriesDenialByName( SeriesEntity $seriesDenial ): ?SeriesEntity
-	{
-		$query = <<< END
-			SELECT
-				`seriesDenials`.*
-			FROM
-				`seriesDenials`
-			WHERE
-				`seriesDenials`.`name` = :name
-			LIMIT
-				0, 1;
-		END;
-
-		$arguments = [
-			'name' => $seriesDenial->name
-		];
-
-		try
-		{
-			$this->databaseConnector->beginTransaction();
-			/** @var SeriesEntity $result */
-			$result = $this->databaseConnector->queryFirst( $query, $arguments, SeriesEntity::class );
-			$this->databaseConnector->commit();
-		}
-		catch ( PersistenceException $exception )
-		{
-			$this->databaseConnector->rollback();
-			throw $exception;
-		}
-
-		return $result;
-	}
-
-	/**
 	 * @return SeriesEntity[]
 	 * @throws PersistenceException
 	 */
