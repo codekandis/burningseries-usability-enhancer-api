@@ -20,6 +20,8 @@ class IndexApiUriExtender extends AbstractApiUriExtender
 		$this->addCanonicalUri();
 		$this->addUsersUri();
 		$this->addSeriesDenialsUri();
+		$this->addSeriesInterestsUri();
+		$this->addSeriesFavoritesUri();
 	}
 
 	private function addCanonicalUri(): void
@@ -35,5 +37,15 @@ class IndexApiUriExtender extends AbstractApiUriExtender
 	private function addSeriesDenialsUri(): void
 	{
 		$this->index->seriesDenialsUri = $this->apiUriBuilder->buildSeriesDenialsUri();
+	}
+
+	private function addSeriesInterestsUri(): void
+	{
+		$this->index->seriesInterestsUri = $this->apiUriBuilder->buildSeriesInterestsUri();
+	}
+
+	private function addSeriesFavoritesUri(): void
+	{
+		$this->index->seriesFavoritesUri = $this->apiUriBuilder->buildSeriesFavoritesUri();
 	}
 }

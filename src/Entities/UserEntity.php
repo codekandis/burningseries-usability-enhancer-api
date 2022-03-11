@@ -19,4 +19,10 @@ class UserEntity extends AbstractEntity
 
 	/** @var string */
 	public string $seriesDenialsUri = '';
+
+	/** @var string */
+	public string $seriesInterestsUri = '';
+
+	/** @var string */
+	public string $seriesFavoritesUri = '';
 }

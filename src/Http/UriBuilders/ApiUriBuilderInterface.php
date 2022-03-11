@@ -16,4 +16,20 @@ interface ApiUriBuilderInterface
 	public function buildSeriesDenialUri( string $seriesDenialId ): string;
 
 	public function buildSeriesDenialUsersUri( string $seriesDenialId ): string;
+
+	public function buildUserSeriesInterestsUri( string $userId ): string;
+
+	public function buildSeriesInterestsUri(): string;
+
+	public function buildSeriesInterestUri( string $seriesInterestId ): string;
+
+	public function buildSeriesInterestUsersUri( string $seriesInterestId ): string;
+
+	public function buildUserSeriesFavoritesUri( string $userId ): string;
+
+	public function buildSeriesFavoritesUri(): string;
+
+	public function buildSeriesFavoriteUri( string $seriesFavoriteId ): string;
+
+	public function buildSeriesFavoriteUsersUri( string $seriesFavoriteId ): string;
 }

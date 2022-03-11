@@ -7,21 +7,21 @@ use CodeKandis\Tiphy\Persistence\MariaDb\PreparedStatementInArrayHelper;
 use CodeKandis\Tiphy\Persistence\MariaDb\Repositories\AbstractRepository;
 use CodeKandis\Tiphy\Persistence\PersistenceException;
 
-class SeriesDenialsRepository extends AbstractRepository
+class SeriesFavoritesRepository extends AbstractRepository
 {
 	/**
 	 * @return SeriesEntity[]
 	 * @throws PersistenceException
 	 */
-	public function readSeriesDenials(): array
+	public function readSeriesFavorites(): array
 	{
 		$query = <<< END
 			SELECT
-				`seriesDenials`.*
+				`seriesFavorites`.*
 			FROM
-				`seriesDenials`
+				`seriesFavorites`
 			ORDER BY
-				`seriesDenials`.`createdOn` DESC;
+				`seriesFavorites`.`createdOn` DESC;
 		END;
 
 		try
@@ -43,21 +43,21 @@ class SeriesDenialsRepository extends AbstractRepository
 	/**
 	 * @throws PersistenceException
 	 */
-	public function readSeriesDenialById( SeriesEntity $seriesDenial ): ?SeriesEntity
+	public function readSeriesFavoriteById( SeriesEntity $seriesFavorite ): ?SeriesEntity
 	{
 		$query = <<< END
 			SELECT
-				`seriesDenials`.*
+				`seriesFavorites`.*
 			FROM
-				`seriesDenials`
+				`seriesFavorites`
 			WHERE
-				`seriesDenials`.`id` = :seriesDenialId
+				`seriesFavorites`.`id` = :seriesFavoriteId
 			LIMIT
 				0, 1;
 		END;
 
 		$arguments = [
-			'seriesDenialId' => $seriesDenial->id
+			'seriesFavoriteId' => $seriesFavorite->id
 		];
 
 		try
@@ -79,21 +79,21 @@ class SeriesDenialsRepository extends AbstractRepository
 	/**
 	 * @throws PersistenceException
 	 */
-	public function readSeriesDenialByName( SeriesEntity $seriesDenial ): ?SeriesEntity
+	public function readSeriesFavoriteByName( SeriesEntity $seriesFavorite ): ?SeriesEntity
 	{
 		$query = <<< END
 			SELECT
-				`seriesDenials`.*
+				`seriesFavorites`.*
 			FROM
-				`seriesDenials`
+				`seriesFavorites`
 			WHERE
-				`seriesDenials`.`name` = :name
+				`seriesFavorites`.`name` = :name
 			LIMIT
 				0, 1;
 		END;
 
 		$arguments = [
-			'name' => $seriesDenial->name
+			'name' => $seriesFavorite->name
 		];
 
 		try
@@ -116,21 +116,21 @@ class SeriesDenialsRepository extends AbstractRepository
 	 * @return SeriesEntity[]
 	 * @throws PersistenceException
 	 */
-	public function readSeriesDenialsByUserId( UserEntity $user ): array
+	public function readSeriesFavoritesByUserId( UserEntity $user ): array
 	{
 		$query = <<< END
 			SELECT
-				`seriesDenials`.*
+				`seriesFavorites`.*
 			FROM
-				`seriesDenials`
+				`seriesFavorites`
 			INNER JOIN
-				`users_seriesDenials`
+				`users_seriesFavorites`
 				ON
-				`users_seriesDenials`.`userId` = :userId
+				`users_seriesFavorites`.`userId` = :userId
 			WHERE
-				`seriesDenials`.`id` = `users_seriesDenials`.`seriesDenialId`
+				`seriesFavorites`.`id` = `users_seriesFavorites`.`seriesFavoriteId`
 			ORDER BY
-				`seriesDenials`.`createdOn` DESC;
+				`seriesFavorites`.`createdOn` DESC;
 		END;
 
 		$arguments = [
@@ -158,7 +158,7 @@ class SeriesDenialsRepository extends AbstractRepository
 	 * @return SeriesEntity[]
 	 * @throws PersistenceException
 	 */
-	public function readSeriesDenialsFilteredByUserId( array $series, UserEntity $user ): array
+	public function readSeriesFavoritesFilteredByUserId( array $series, UserEntity $user ): array
 	{
 		$inArrayHelper = new PreparedStatementInArrayHelper(
 			'seriesName',
@@ -170,19 +170,19 @@ class SeriesDenialsRepository extends AbstractRepository
 
 		$query = <<< END
 			SELECT
-				`seriesDenials`.*
+				`seriesFavorites`.*
 			FROM
-				`seriesDenials`
+				`seriesFavorites`
 			INNER JOIN
-				`users_seriesDenials`
+				`users_seriesFavorites`
 				ON
-				`users_seriesDenials`.`userId` = :userId
+				`users_seriesFavorites`.`userId` = :userId
 			WHERE
-			    `seriesDenials`.name IN ( {$inArrayHelper->getNamedPlaceholders()} )
+			    `seriesFavorites`.name IN ( {$inArrayHelper->getNamedPlaceholders()} )
 			    AND
-				`seriesDenials`.`id` = `users_seriesDenials`.`seriesDenialId`
+				`seriesFavorites`.`id` = `users_seriesFavorites`.`seriesFavoriteId`
 			ORDER BY
-				`seriesDenials`.`createdOn` DESC;
+				`seriesFavorites`.`createdOn` DESC;
 		END;
 
 		$arguments = [
@@ -209,34 +209,34 @@ class SeriesDenialsRepository extends AbstractRepository
 	/**
 	 * @throws PersistenceException
 	 */
-	public function writeSeriesDenialByUserId( SeriesEntity $seriesDenialEntity, UserEntity $user ): void
+	public function writeSeriesFavoriteByUserId( SeriesEntity $seriesFavoriteEntity, UserEntity $user ): void
 	{
 		$query = <<< END
 			INSERT INTO
-				`seriesDenials`
+				`seriesFavorites`
 				( `id`, `name`, `createdOn` )
 			VALUES
-				( UUID( ), LOWER( :seriesDenialName ), :createdOn )
+				( UUID( ), LOWER( :seriesFavoriteName ), :createdOn )
 			ON DUPLICATE KEY UPDATE
 				`createdOn` = IF ( `createdOn` IS NULL OR `createdOn` > :createdOn, :createdOn, `createdOn` );
 
 			INSERT IGNORE INTO
-				`users_seriesDenials`
-				( `id`, `userId`, `seriesDenialId`)
+				`users_seriesFavorites`
+				( `id`, `userId`, `seriesFavoriteId`)
 			SELECT
 				UUID( ),
 				:userId,
-				`seriesDenials`.`id`
+				`seriesFavorites`.`id`
 			FROM
-				`seriesDenials`
+				`seriesFavorites`
 			WHERE
-				`seriesDenials`.`name` = :seriesDenialName;
+				`seriesFavorites`.`name` = :seriesFavoriteName;
 		END;
 
 		$arguments = [
 			'userId'           => $user->id,
-			'seriesDenialName' => $seriesDenialEntity->name,
-			'createdOn'        => $seriesDenialEntity->createdOn
+			'seriesFavoriteName' => $seriesFavoriteEntity->name,
+			'createdOn'        => $seriesFavoriteEntity->createdOn
 		];
 
 		try
@@ -255,33 +255,33 @@ class SeriesDenialsRepository extends AbstractRepository
 	/**
 	 * @throws PersistenceException
 	 */
-	public function deleteSeriesDenialByUserId( SeriesEntity $seriesDenial, UserEntity $user ): void
+	public function deleteSeriesFavoriteByUserId( SeriesEntity $seriesFavorite, UserEntity $user ): void
 	{
 		$query = <<< END
 			DELETE
 			FROM
-				`users_seriesDenials`
+				`users_seriesFavorites`
 			WHERE
-				`users_seriesDenials`.`userId` = :userId
+				`users_seriesFavorites`.`userId` = :userId
 				AND
-				`users_seriesDenials`.`seriesDenialId` = :seriesDenialId;
+				`users_seriesFavorites`.`seriesFavoriteId` = :seriesFavoriteId;
 
 			DELETE
-				`seriesDenials`
+				`seriesFavorites`
 			FROM
-				`seriesDenials`
+				`seriesFavorites`
 			LEFT JOIN
-				`users_seriesDenials`
+				`users_seriesFavorites`
 			ON
-				`users_seriesDenials`.`seriesDenialId` = `seriesDenials`.`id`
+				`users_seriesFavorites`.`seriesFavoriteId` = `seriesFavorites`.`id`
 			WHERE
-				`users_seriesDenials`.`id` IS NULL;
+				`users_seriesFavorites`.`id` IS NULL;
 			
 		END;
 
 		$arguments = [
 			'userId'         => $user->id,
-			'seriesDenialId' => $seriesDenial->id
+			'seriesFavoriteId' => $seriesFavorite->id
 		];
 
 		try

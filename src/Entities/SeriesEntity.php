@@ -17,6 +17,6 @@ class SeriesEntity extends AbstractEntity
 	/** @var string */
 	public string $usersUri = '';
 
-	/** @var null|string */
+	/** @var ?string */
 	public ?string $createdOn = null;
 }

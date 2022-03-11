@@ -19,7 +19,7 @@ class AuthenticationPreDispatcher implements PreDispatcherInterface
 {
 	/**
 	 * Gets the authorization header.
-	 * @return null|ParsedAuthorizationHeaderInterface The authorization header.
+	 * @return ?ParsedAuthorizationHeaderInterface The authorization header.
 	 */
 	private function getAuthorizationHeader(): ?ParsedAuthorizationHeaderInterface
 	{

@@ -2,7 +2,6 @@
 namespace CodeKandis\BurningSeriesUsabilityEnhancerApi\Persistence\MariaDb\Repositories;
 
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\SeriesEntity;
-use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\StationEntity;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Entities\UserEntity;
 use CodeKandis\Tiphy\Persistence\MariaDb\Repositories\AbstractRepository;
 use CodeKandis\Tiphy\Persistence\PersistenceException;
@@ -80,7 +79,7 @@ class UsersRepository extends AbstractRepository
 	 * @return UserEntity[]
 	 * @throws PersistenceException
 	 */
-	public function readUsersByStationId( StationEntity $station ): array
+	public function readUsersBySeriesDenialId( SeriesEntity $seriesDenial ): array
 	{
 		$query = <<< END
 			SELECT
@@ -88,17 +87,17 @@ class UsersRepository extends AbstractRepository
 			FROM
 				`users`
 			INNER JOIN
-				`users_stations`
+				`users_seriesDenials`
 				ON
-				`users_stations`.`stationId` = :stationId
+				`users_seriesDenials`.`seriesDenialId` = :seriesDenialId
 			WHERE
-				`users`.`id` = `users_stations`.`userId`
+				`users`.`id` = `users_seriesDenials`.`userId`
 			ORDER BY
 				`users`.`name` ASC;
 		END;
 
 		$arguments = [
-			'stationId' => $station->id
+			'seriesDenialId' => $seriesDenial->id
 		];
 
 		try
@@ -121,7 +120,7 @@ class UsersRepository extends AbstractRepository
 	 * @return UserEntity[]
 	 * @throws PersistenceException
 	 */
-	public function readUsersBySeriesDenialId( SeriesEntity $seriesDenial ): array
+	public function readUsersBySeriesInterestId( SeriesEntity $seriesInterest ): array
 	{
 		$query = <<< END
 			SELECT
@@ -129,17 +128,58 @@ class UsersRepository extends AbstractRepository
 			FROM
 				`users`
 			INNER JOIN
-				`users_seriesDenials`
+				`users_seriesInterests`
 				ON
-				`users_seriesDenials`.`seriesDenialId` = :seriesDenialId
+				`users_seriesInterests`.`seriesInterestId` = :seriesInterestId
 			WHERE
-				`users`.`id` = `users_seriesDenials`.`userId`
+				`users`.`id` = `users_seriesInterests`.`userId`
 			ORDER BY
 				`users`.`name` ASC;
 		END;
 
 		$arguments = [
-			'seriesDenialId' => $seriesDenial->id
+			'seriesInterestId' => $seriesInterest->id
+		];
+
+		try
+		{
+			$this->databaseConnector->beginTransaction();
+			/** @var UserEntity[] $resultSet */
+			$resultSet = $this->databaseConnector->query( $query, $arguments, UserEntity::class );
+			$this->databaseConnector->commit();
+		}
+		catch ( PersistenceException $exception )
+		{
+			$this->databaseConnector->rollback();
+			throw $exception;
+		}
+
+		return $resultSet;
+	}
+
+	/**
+	 * @return UserEntity[]
+	 * @throws PersistenceException
+	 */
+	public function readUsersBySeriesFavoriteId( SeriesEntity $seriesFavorite ): array
+	{
+		$query = <<< END
+			SELECT
+				`users`.*
+			FROM
+				`users`
+			INNER JOIN
+				`users_seriesFavorites`
+				ON
+				`users_seriesFavorites`.`seriesFavoriteId` = :seriesFavoriteId
+			WHERE
+				`users`.`id` = `users_seriesFavorites`.`userId`
+			ORDER BY
+				`users`.`name` ASC;
+		END;
+
+		$arguments = [
+			'seriesFavoriteId' => $seriesFavorite->id
 		];
 
 		try
