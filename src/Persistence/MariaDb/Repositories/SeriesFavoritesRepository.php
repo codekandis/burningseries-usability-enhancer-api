@@ -51,13 +51,13 @@ class SeriesFavoritesRepository extends AbstractRepository
 			FROM
 				`seriesFavorites`
 			WHERE
-				`seriesFavorites`.`id` = :seriesFavoriteId
+				`seriesFavorites`.`id` = :id
 			LIMIT
 				0, 1;
 		END;
 
 		$arguments = [
-			'seriesFavoriteId' => $seriesFavorite->id
+			'id' => $seriesFavorite->id
 		];
 
 		try
@@ -178,9 +178,9 @@ class SeriesFavoritesRepository extends AbstractRepository
 		$query = <<< END
 			INSERT INTO
 				`seriesFavorites`
-				( `id`, `name`, `createdOn` )
+				( `id`, `name`, `uri`, `createdOn` )
 			VALUES
-				( UUID( ), LOWER( :seriesFavoriteName ), :createdOn )
+				( UUID( ), LOWER( :name ), :uri, :createdOn )
 			ON DUPLICATE KEY UPDATE
 				`createdOn` = IF ( `createdOn` IS NULL OR `createdOn` > :createdOn, :createdOn, `createdOn` );
 
@@ -194,13 +194,14 @@ class SeriesFavoritesRepository extends AbstractRepository
 			FROM
 				`seriesFavorites`
 			WHERE
-				`seriesFavorites`.`name` = :seriesFavoriteName;
+				`seriesFavorites`.`name` = :name;
 		END;
 
 		$arguments = [
-			'userId'           => $user->id,
-			'seriesFavoriteName' => $seriesFavoriteEntity->name,
-			'createdOn'        => $seriesFavoriteEntity->createdOn
+			'userId'    => $user->id,
+			'name'      => $seriesFavoriteEntity->name,
+			'uri'       => $seriesFavoriteEntity->uri,
+			'createdOn' => $seriesFavoriteEntity->createdOn
 		];
 
 		try
@@ -228,7 +229,7 @@ class SeriesFavoritesRepository extends AbstractRepository
 			WHERE
 				`users_seriesFavorites`.`userId` = :userId
 				AND
-				`users_seriesFavorites`.`seriesFavoriteId` = :seriesFavoriteId;
+				`users_seriesFavorites`.`seriesFavoriteId` = :id;
 
 			DELETE
 				`seriesFavorites`
@@ -239,13 +240,13 @@ class SeriesFavoritesRepository extends AbstractRepository
 			ON
 				`users_seriesFavorites`.`seriesFavoriteId` = `seriesFavorites`.`id`
 			WHERE
-				`users_seriesFavorites`.`id` IS NULL;
+				`users_seriesFavorites`.`seriesFavoriteId` IS NULL;
 			
 		END;
 
 		$arguments = [
-			'userId'         => $user->id,
-			'seriesFavoriteId' => $seriesFavorite->id
+			'userId' => $user->id,
+			'id'     => $seriesFavorite->id
 		];
 
 		try
