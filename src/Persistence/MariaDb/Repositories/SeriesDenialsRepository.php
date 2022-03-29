@@ -51,13 +51,13 @@ class SeriesDenialsRepository extends AbstractRepository
 			FROM
 				`seriesDenials`
 			WHERE
-				`seriesDenials`.`id` = :seriesDenialId
+				`seriesDenials`.`id` = :id
 			LIMIT
 				0, 1;
 		END;
 
 		$arguments = [
-			'seriesDenialId' => $seriesDenial->id
+			'id' => $seriesDenial->id
 		];
 
 		try
@@ -178,9 +178,9 @@ class SeriesDenialsRepository extends AbstractRepository
 		$query = <<< END
 			INSERT INTO
 				`seriesDenials`
-				( `id`, `name`, `createdOn` )
+				( `id`, `name`, `uri`, `createdOn` )
 			VALUES
-				( UUID( ), LOWER( :seriesDenialName ), :createdOn )
+				( UUID( ), LOWER( :name ), :uri, :createdOn )
 			ON DUPLICATE KEY UPDATE
 				`createdOn` = IF ( `createdOn` IS NULL OR `createdOn` > :createdOn, :createdOn, `createdOn` );
 
@@ -194,13 +194,14 @@ class SeriesDenialsRepository extends AbstractRepository
 			FROM
 				`seriesDenials`
 			WHERE
-				`seriesDenials`.`name` = :seriesDenialName;
+				`seriesDenials`.`name` = :name;
 		END;
 
 		$arguments = [
-			'userId'           => $user->id,
-			'seriesDenialName' => $seriesDenialEntity->name,
-			'createdOn'        => $seriesDenialEntity->createdOn
+			'userId'    => $user->id,
+			'name'      => $seriesDenialEntity->name,
+			'uri'       => $seriesDenialEntity->uri,
+			'createdOn' => $seriesDenialEntity->createdOn
 		];
 
 		try
@@ -228,7 +229,7 @@ class SeriesDenialsRepository extends AbstractRepository
 			WHERE
 				`users_seriesDenials`.`userId` = :userId
 				AND
-				`users_seriesDenials`.`seriesDenialId` = :seriesDenialId;
+				`users_seriesDenials`.`seriesDenialId` = :id;
 
 			DELETE
 				`seriesDenials`
@@ -239,13 +240,13 @@ class SeriesDenialsRepository extends AbstractRepository
 			ON
 				`users_seriesDenials`.`seriesDenialId` = `seriesDenials`.`id`
 			WHERE
-				`users_seriesDenials`.`id` IS NULL;
+				`users_seriesDenials`.`seriesDenialId` IS NULL;
 			
 		END;
 
 		$arguments = [
-			'userId'         => $user->id,
-			'seriesDenialId' => $seriesDenial->id
+			'userId' => $user->id,
+			'id'     => $seriesDenial->id
 		];
 
 		try

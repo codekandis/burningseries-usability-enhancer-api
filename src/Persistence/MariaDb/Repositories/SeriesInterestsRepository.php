@@ -51,13 +51,13 @@ class SeriesInterestsRepository extends AbstractRepository
 			FROM
 				`seriesInterests`
 			WHERE
-				`seriesInterests`.`id` = :seriesInterestId
+				`seriesInterests`.`id` = :id
 			LIMIT
 				0, 1;
 		END;
 
 		$arguments = [
-			'seriesInterestId' => $seriesInterest->id
+			'id' => $seriesInterest->id
 		];
 
 		try
@@ -178,9 +178,9 @@ class SeriesInterestsRepository extends AbstractRepository
 		$query = <<< END
 			INSERT INTO
 				`seriesInterests`
-				( `id`, `name`, `createdOn` )
+				( `id`, `name`, `uri`, `createdOn` )
 			VALUES
-				( UUID( ), LOWER( :seriesInterestName ), :createdOn )
+				( UUID( ), LOWER( :name ), :uri, :createdOn )
 			ON DUPLICATE KEY UPDATE
 				`createdOn` = IF ( `createdOn` IS NULL OR `createdOn` > :createdOn, :createdOn, `createdOn` );
 
@@ -194,13 +194,14 @@ class SeriesInterestsRepository extends AbstractRepository
 			FROM
 				`seriesInterests`
 			WHERE
-				`seriesInterests`.`name` = :seriesInterestName;
+				`seriesInterests`.`name` = :name;
 		END;
 
 		$arguments = [
-			'userId'             => $user->id,
-			'seriesInterestName' => $seriesInterestEntity->name,
-			'createdOn'          => $seriesInterestEntity->createdOn
+			'userId'    => $user->id,
+			'name'      => $seriesInterestEntity->name,
+			'uri'       => $seriesInterestEntity->uri,
+			'createdOn' => $seriesInterestEntity->createdOn
 		];
 
 		try
@@ -228,7 +229,7 @@ class SeriesInterestsRepository extends AbstractRepository
 			WHERE
 				`users_seriesInterests`.`userId` = :userId
 				AND
-				`users_seriesInterests`.`seriesInterestId` = :seriesInterestId;
+				`users_seriesInterests`.`seriesInterestId` = :id;
 
 			DELETE
 				`seriesInterests`
@@ -239,13 +240,13 @@ class SeriesInterestsRepository extends AbstractRepository
 			ON
 				`users_seriesInterests`.`seriesInterestId` = `seriesInterests`.`id`
 			WHERE
-				`users_seriesInterests`.`id` IS NULL;
+				`users_seriesInterests`.`seriesInterestId` IS NULL;
 			
 		END;
 
 		$arguments = [
-			'userId'           => $user->id,
-			'seriesInterestId' => $seriesInterest->id
+			'userId' => $user->id,
+			'id'     => $seriesInterest->id
 		];
 
 		try
