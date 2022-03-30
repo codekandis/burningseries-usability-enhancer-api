@@ -133,9 +133,11 @@ class UserSeriesDenialsFilteredAction extends AbstractWithDatabaseConnectorActio
 	 */
 	private function readSeriesDenialsFilteredByUserId( array $series, UserEntity $user ): array
 	{
-		return ( new SeriesDenialsRepository(
-			$this->getDatabaseConnector()
-		) )
-			->readSeriesDenialsFilteredByUserId( $series, $user );
+		return [] === $series
+			? []
+			: ( new SeriesDenialsRepository(
+				$this->getDatabaseConnector()
+			) )
+				->readSeriesDenialsFilteredByUserId( $series, $user );
 	}
 }
