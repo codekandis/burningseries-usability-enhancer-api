@@ -133,9 +133,11 @@ class UserSeriesFavoritesFilteredAction extends AbstractWithDatabaseConnectorAct
 	 */
 	private function readSeriesFavoritesFilteredByUserId( array $series, UserEntity $user ): array
 	{
-		return ( new SeriesFavoritesRepository(
-			$this->getDatabaseConnector()
-		) )
-			->readSeriesFavoritesFilteredByUserId( $series, $user );
+		return [] === $series
+			? []
+			: ( new SeriesFavoritesRepository(
+				$this->getDatabaseConnector()
+			) )
+				->readSeriesFavoritesFilteredByUserId( $series, $user );
 	}
 }

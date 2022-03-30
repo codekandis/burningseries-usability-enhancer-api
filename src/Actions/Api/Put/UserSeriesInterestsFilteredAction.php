@@ -133,9 +133,11 @@ class UserSeriesInterestsFilteredAction extends AbstractWithDatabaseConnectorAct
 	 */
 	private function readSeriesInterestsFilteredByUserId( array $series, UserEntity $user ): array
 	{
-		return ( new SeriesInterestsRepository(
-			$this->getDatabaseConnector()
-		) )
-			->readSeriesInterestsFilteredByUserId( $series, $user );
+		return [] === $series
+			? []
+			: ( new SeriesInterestsRepository(
+				$this->getDatabaseConnector()
+			) )
+				->readSeriesInterestsFilteredByUserId( $series, $user );
 	}
 }
