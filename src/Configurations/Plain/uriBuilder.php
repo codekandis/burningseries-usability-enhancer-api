@@ -6,17 +6,17 @@ return [
 		'index'               => '',
 		'users'               => 'users',
 		'user'                => 'users/%s',
-		'userSeriesDenials'   => 'users/%s/series-denials',
 		'seriesDenials'       => 'series-denials',
 		'seriesDenial'        => 'series-denials/%s',
 		'seriesDenialUsers'   => 'series-denials/%s/users',
-		'userSeriesInterests' => 'users/%s/series-interests',
+		'userSeriesDenials'   => 'users/%s/series-denials',
 		'seriesInterests'     => 'series-interests',
 		'seriesInterest'      => 'series-interests/%s',
 		'seriesInterestUsers' => 'series-interests/%s/users',
-		'userSeriesFavorites' => 'users/%s/series-favorites',
+		'userSeriesInterests' => 'users/%s/series-interests',
 		'seriesFavorites'     => 'series-favorites',
 		'seriesFavorite'      => 'series-favorites/%s',
-		'seriesFavoriteUsers' => 'series-favorites/%s/users'
+		'seriesFavoriteUsers' => 'series-favorites/%s/users',
+		'userSeriesFavorites' => 'users/%s/series-favorites'
 	]
 ];
