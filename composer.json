@@ -54,5 +54,10 @@
 				"tests/"
 			]
 		}
+	},
+	"config": {
+		"allow-plugins": {
+			"php-http/discovery": false
+		}
 	}
 }
