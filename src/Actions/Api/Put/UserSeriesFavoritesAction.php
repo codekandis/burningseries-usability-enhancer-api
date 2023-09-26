@@ -8,7 +8,9 @@ use CodeKandis\BurningSeriesUsabilityEnhancerApi\Errors\CommonErrorCodes;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Errors\CommonErrorMessages;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Errors\UsersErrorCodes;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Errors\UsersErrorMessages;
+use CodeKandis\BurningSeriesUsabilityEnhancerApi\Persistence\MariaDb\Repositories\SeriesDenialsRepository;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Persistence\MariaDb\Repositories\SeriesFavoritesRepository;
+use CodeKandis\BurningSeriesUsabilityEnhancerApi\Persistence\MariaDb\Repositories\SeriesInterestsRepository;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Persistence\MariaDb\Repositories\UsersRepository;
 use CodeKandis\Tiphy\Http\ContentTypes;
 use CodeKandis\Tiphy\Http\Requests\BadRequestException;
@@ -62,6 +64,19 @@ class UserSeriesFavoritesAction extends AbstractWithDatabaseConnectorAction
 			 * @var SeriesEntity $seriesFavorite
 			 */
 			$seriesFavorite = SeriesEntity::fromObject( $sentSeriesFavorite );
+
+			$seriesDenial = $this->readSeriesDenialByNameAndUserId( $seriesFavorite, $user );
+			if ( null !== $seriesDenial )
+			{
+				$this->deleteSeriesDenialByIdAndUserId( $seriesDenial, $user );
+			}
+
+			$seriesInterest = $this->readSeriesInterestByNameAndUserId( $seriesFavorite, $user );
+			if ( null !== $seriesInterest )
+			{
+				$this->deleteSeriesInterestByIdAndUserId( $seriesInterest, $user );
+			}
+
 			$this->writeSeriesFavoriteByNameAndUserId( $seriesFavorite, $user );
 		}
 
@@ -120,6 +135,50 @@ class UserSeriesFavoritesAction extends AbstractWithDatabaseConnectorAction
 			$this->getDatabaseConnector()
 		) )
 			->readUserById( $requestedUser );
+	}
+
+	/**
+	 * @throws PersistenceException
+	 */
+	private function readSeriesDenialByNameAndUserId( SeriesEntity $requestedSeriesDenial, UserEntity $requestedUser ): ?SeriesEntity
+	{
+		return ( new SeriesDenialsRepository(
+			$this->getDatabaseConnector()
+		) )
+			->readSeriesDenialByNameAndUserId( $requestedSeriesDenial, $requestedUser );
+	}
+
+	/**
+	 * @throws PersistenceException
+	 */
+	private function deleteSeriesDenialByIdAndUserId( SeriesEntity $requestedSeriesDenial, UserEntity $requestedUser ): void
+	{
+		( new SeriesDenialsRepository(
+			$this->getDatabaseConnector()
+		) )
+			->deleteSeriesDenialByIdAndUserId( $requestedSeriesDenial, $requestedUser );
+	}
+
+	/**
+	 * @throws PersistenceException
+	 */
+	private function readSeriesInterestByNameAndUserId( SeriesEntity $requestedSeriesInterest, UserEntity $requestedUser ): ?SeriesEntity
+	{
+		return ( new SeriesInterestsRepository(
+			$this->getDatabaseConnector()
+		) )
+			->readSeriesInterestByNameAndUserId( $requestedSeriesInterest, $requestedUser );
+	}
+
+	/**
+	 * @throws PersistenceException
+	 */
+	private function deleteSeriesInterestByIdAndUserId( SeriesEntity $requestedSeriesInterest, UserEntity $requestedUser ): void
+	{
+		( new SeriesInterestsRepository(
+			$this->getDatabaseConnector()
+		) )
+			->deleteSeriesInterestByIdAndUserId( $requestedSeriesInterest, $requestedUser );
 	}
 
 	/**

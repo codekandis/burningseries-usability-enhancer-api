@@ -8,6 +8,8 @@ use CodeKandis\BurningSeriesUsabilityEnhancerApi\Errors\CommonErrorCodes;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Errors\CommonErrorMessages;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Errors\UsersErrorCodes;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Errors\UsersErrorMessages;
+use CodeKandis\BurningSeriesUsabilityEnhancerApi\Persistence\MariaDb\Repositories\SeriesDenialsRepository;
+use CodeKandis\BurningSeriesUsabilityEnhancerApi\Persistence\MariaDb\Repositories\SeriesFavoritesRepository;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Persistence\MariaDb\Repositories\SeriesInterestsRepository;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Persistence\MariaDb\Repositories\UsersRepository;
 use CodeKandis\Tiphy\Http\ContentTypes;
@@ -62,6 +64,19 @@ class UserSeriesInterestsAction extends AbstractWithDatabaseConnectorAction
 			 * @var SeriesEntity $seriesInterest
 			 */
 			$seriesInterest = SeriesEntity::fromObject( $sentSeriesInterest );
+
+			$seriesDenial = $this->readSeriesDenialByNameAndUserId( $seriesInterest, $user );
+			if ( null !== $seriesDenial )
+			{
+				$this->deleteSeriesDenialByIdAndUserId( $seriesDenial, $user );
+			}
+
+			$seriesFavorite = $this->readSeriesFavoriteByNameAndUserId( $seriesInterest, $user );
+			if ( null !== $seriesFavorite )
+			{
+				$this->deleteSeriesFavoriteByIdAndUserId( $seriesFavorite, $user );
+			}
+
 			$this->writeSeriesInterestByNameAndUserId( $seriesInterest, $user );
 		}
 
@@ -120,6 +135,50 @@ class UserSeriesInterestsAction extends AbstractWithDatabaseConnectorAction
 			$this->getDatabaseConnector()
 		) )
 			->readUserById( $requestedUser );
+	}
+
+	/**
+	 * @throws PersistenceException
+	 */
+	private function readSeriesDenialByNameAndUserId( SeriesEntity $requestedSeriesDenial, UserEntity $requestedUser ): ?SeriesEntity
+	{
+		return ( new SeriesDenialsRepository(
+			$this->getDatabaseConnector()
+		) )
+			->readSeriesDenialByNameAndUserId( $requestedSeriesDenial, $requestedUser );
+	}
+
+	/**
+	 * @throws PersistenceException
+	 */
+	private function deleteSeriesDenialByIdAndUserId( SeriesEntity $requestedSeriesDenial, UserEntity $requestedUser ): void
+	{
+		( new SeriesDenialsRepository(
+			$this->getDatabaseConnector()
+		) )
+			->deleteSeriesDenialByIdAndUserId( $requestedSeriesDenial, $requestedUser );
+	}
+
+	/**
+	 * @throws PersistenceException
+	 */
+	private function readSeriesFavoriteByNameAndUserId( SeriesEntity $requestedSeriesFavorite, UserEntity $requestedUser ): ?SeriesEntity
+	{
+		return ( new SeriesFavoritesRepository(
+			$this->getDatabaseConnector()
+		) )
+			->readSeriesFavoriteByNameAndUserId( $requestedSeriesFavorite, $requestedUser );
+	}
+
+	/**
+	 * @throws PersistenceException
+	 */
+	private function deleteSeriesFavoriteByIdAndUserId( SeriesEntity $requestedSeriesFavorite, UserEntity $requestedUser ): void
+	{
+		( new SeriesFavoritesRepository(
+			$this->getDatabaseConnector()
+		) )
+			->deleteSeriesFavoriteByIdAndUserId( $requestedSeriesFavorite, $requestedUser );
 	}
 
 	/**
