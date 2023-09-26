@@ -1,6 +1,7 @@
 {
 	"name": "codekandis/burningseries-usability-enhancer-api",
 	"description": "This is an API for `burningseries.co` usability enhancements.",
+	"version": "dev-development",
 	"keywords": [
 		"php",
 		"burningseries",
