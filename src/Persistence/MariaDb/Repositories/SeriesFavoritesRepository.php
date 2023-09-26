@@ -77,6 +77,49 @@ class SeriesFavoritesRepository extends AbstractRepository
 	}
 
 	/**
+	 * @throws PersistenceException
+	 */
+	public function readSeriesFavoriteByNameAndUserId( SeriesEntity $seriesFavorite, UserEntity $user ): ?SeriesEntity
+	{
+		$query = <<< END
+			SELECT
+				`seriesFavorites`.*
+			FROM
+				`seriesFavorites`
+			INNER JOIN
+				`users_seriesFavorites`
+				ON
+				`users_seriesFavorites`.`userId` = :userId
+			WHERE
+			    `seriesFavorites`.name = :name
+			    AND
+				`seriesFavorites`.`id` = `users_seriesFavorites`.`seriesFavoriteId`
+			LIMIT
+				0, 1;
+		END;
+
+		$arguments = [
+			'name'   => $seriesFavorite->name,
+			'userId' => $user->id,
+		];
+
+		try
+		{
+			$this->databaseConnector->beginTransaction();
+			/** @var SeriesEntity $result */
+			$result = $this->databaseConnector->queryFirst( $query, $arguments, SeriesEntity::class );
+			$this->databaseConnector->commit();
+		}
+		catch ( PersistenceException $exception )
+		{
+			$this->databaseConnector->rollback();
+			throw $exception;
+		}
+
+		return $result;
+	}
+
+	/**
 	 * @return SeriesEntity[]
 	 * @throws PersistenceException
 	 */

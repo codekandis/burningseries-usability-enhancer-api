@@ -77,6 +77,49 @@ class SeriesDenialsRepository extends AbstractRepository
 	}
 
 	/**
+	 * @throws PersistenceException
+	 */
+	public function readSeriesDenialByNameAndUserId( SeriesEntity $seriesDenial, UserEntity $user ): ?SeriesEntity
+	{
+		$query = <<< END
+			SELECT
+				`seriesDenials`.*
+			FROM
+				`seriesDenials`
+			INNER JOIN
+				`users_seriesDenials`
+				ON
+				`users_seriesDenials`.`userId` = :userId
+			WHERE
+			    `seriesDenials`.name = :name
+			    AND
+				`seriesDenials`.`id` = `users_seriesDenials`.`seriesDenialId`
+			LIMIT
+				0, 1;
+		END;
+
+		$arguments = [
+			'name'   => $seriesDenial->name,
+			'userId' => $user->id,
+		];
+
+		try
+		{
+			$this->databaseConnector->beginTransaction();
+			/** @var SeriesEntity $result */
+			$result = $this->databaseConnector->queryFirst( $query, $arguments, SeriesEntity::class );
+			$this->databaseConnector->commit();
+		}
+		catch ( PersistenceException $exception )
+		{
+			$this->databaseConnector->rollback();
+			throw $exception;
+		}
+
+		return $result;
+	}
+
+	/**
 	 * @return SeriesEntity[]
 	 * @throws PersistenceException
 	 */

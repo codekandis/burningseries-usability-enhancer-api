@@ -77,6 +77,49 @@ class SeriesInterestsRepository extends AbstractRepository
 	}
 
 	/**
+	 * @throws PersistenceException
+	 */
+	public function readSeriesInterestByNameAndUserId( SeriesEntity $seriesInterest, UserEntity $user ): ?SeriesEntity
+	{
+		$query = <<< END
+			SELECT
+				`seriesInterests`.*
+			FROM
+				`seriesInterests`
+			INNER JOIN
+				`users_seriesInterests`
+				ON
+				`users_seriesInterests`.`userId` = :userId
+			WHERE
+			    `seriesInterests`.name = :name
+			    AND
+				`seriesInterests`.`id` = `users_seriesInterests`.`seriesInterestId`
+			LIMIT
+				0, 1;
+		END;
+
+		$arguments = [
+			'name'   => $seriesInterest->name,
+			'userId' => $user->id,
+		];
+
+		try
+		{
+			$this->databaseConnector->beginTransaction();
+			/** @var SeriesEntity $result */
+			$result = $this->databaseConnector->queryFirst( $query, $arguments, SeriesEntity::class );
+			$this->databaseConnector->commit();
+		}
+		catch ( PersistenceException $exception )
+		{
+			$this->databaseConnector->rollback();
+			throw $exception;
+		}
+
+		return $result;
+	}
+
+	/**
 	 * @return SeriesEntity[]
 	 * @throws PersistenceException
 	 */
