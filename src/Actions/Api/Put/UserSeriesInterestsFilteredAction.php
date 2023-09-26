@@ -46,7 +46,7 @@ class UserSeriesInterestsFilteredAction extends AbstractWithDatabaseConnectorAct
 
 		$requestedUser     = new UserEntity();
 		$requestedUser->id = $inputData[ 'userId' ];
-		$user              = $this->readUser( $requestedUser );
+		$user              = $this->readUserById( $requestedUser );
 
 		if ( null === $user )
 		{
@@ -66,7 +66,7 @@ class UserSeriesInterestsFilteredAction extends AbstractWithDatabaseConnectorAct
 		);
 
 		$responderData = [
-			'seriesInterests' => $this->readSeriesInterestsFilteredByUserId( $series, $user )
+			'seriesInterests' => $this->readSeriesInterestsFilteredByNamesAndUserId( $series, $user )
 		];
 
 		( new JsonResponder( StatusCodes::OK, $responderData ) )
@@ -118,7 +118,7 @@ class UserSeriesInterestsFilteredAction extends AbstractWithDatabaseConnectorAct
 	/**
 	 * @throws PersistenceException
 	 */
-	private function readUser( UserEntity $requestedUser ): ?UserEntity
+	private function readUserById( UserEntity $requestedUser ): ?UserEntity
 	{
 		return ( new UsersRepository(
 			$this->getDatabaseConnector()
@@ -131,13 +131,13 @@ class UserSeriesInterestsFilteredAction extends AbstractWithDatabaseConnectorAct
 	 * @return SeriesEntity[]
 	 * @throws PersistenceException
 	 */
-	private function readSeriesInterestsFilteredByUserId( array $series, UserEntity $user ): array
+	private function readSeriesInterestsFilteredByNamesAndUserId( array $series, UserEntity $user ): array
 	{
 		return [] === $series
 			? []
 			: ( new SeriesInterestsRepository(
 				$this->getDatabaseConnector()
 			) )
-				->readSeriesInterestsFilteredByUserId( $series, $user );
+				->readSeriesInterestsFilteredByNamesAndUserId( $series, $user );
 	}
 }

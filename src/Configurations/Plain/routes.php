@@ -15,6 +15,15 @@ return [
 		'/users/(?<userId>[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})'                                                                                   => [
 			Methods::GET => Api\Get\UserAction::class
 		],
+		'/series-denials'                                                                                                                                 => [
+			Methods::GET => Api\Get\SeriesDenialsAction::class
+		],
+		'/series-denials/(?<seriesDenialId>[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})'                                                                  => [
+			Methods::GET => Api\Get\SeriesDenialAction::class
+		],
+		'/series-denials/(?<seriesDenialId>[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})/users'                                                            => [
+			Methods::GET => Api\Get\SeriesDenialUsersAction::class
+		],
 		'/users/(?<userId>[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})/series-denials'                                                                    => [
 			Methods::GET => Api\Get\UserSeriesDenialsAction::class,
 			Methods::PUT => Api\Put\UserSeriesDenialAction::class
@@ -28,14 +37,14 @@ return [
 		'/users/(?<userId>[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})/series-denials/(?<seriesDenialId>[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})'     => [
 			Methods::DELETE => Api\Delete\UserSeriesDenialAction::class
 		],
-		'/series-denials'                                                                                                                                 => [
-			Methods::GET => Api\Get\SeriesDenialsAction::class
+		'/series-interests'                                                                                                                               => [
+			Methods::GET => Api\Get\SeriesInterestsAction::class
 		],
-		'/series-denials/(?<seriesDenialId>[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})'                                                                  => [
-			Methods::GET => Api\Get\SeriesDenialAction::class
+		'/series-interests/(?<seriesInterestId>[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})'                                                              => [
+			Methods::GET => Api\Get\SeriesInterestAction::class
 		],
-		'/series-denials/(?<seriesDenialId>[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})/users'                                                            => [
-			Methods::GET => Api\Get\SeriesDenialUsersAction::class
+		'/series-interests/(?<seriesInterestId>[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})/users'                                                        => [
+			Methods::GET => Api\Get\SeriesInterestUsersAction::class
 		],
 		'/users/(?<userId>[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})/series-interests'                                                                  => [
 			Methods::GET => Api\Get\UserSeriesInterestsAction::class,
@@ -50,14 +59,14 @@ return [
 		'/users/(?<userId>[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})/series-interests/(?<seriesInterestId>[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})' => [
 			Methods::DELETE => Api\Delete\UserSeriesInterestAction::class
 		],
-		'/series-interests'                                                                                                                               => [
-			Methods::GET => Api\Get\SeriesInterestsAction::class
+		'/series-favorites'                                                                                                                               => [
+			Methods::GET => Api\Get\SeriesFavoritesAction::class
 		],
-		'/series-interests/(?<seriesInterestId>[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})'                                                              => [
-			Methods::GET => Api\Get\SeriesInterestAction::class
+		'/series-favorites/(?<seriesFavoriteId>[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})'                                                              => [
+			Methods::GET => Api\Get\SeriesFavoriteAction::class
 		],
-		'/series-interests/(?<seriesInterestId>[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})/users'                                                        => [
-			Methods::GET => Api\Get\SeriesInterestUsersAction::class
+		'/series-favorites/(?<seriesFavoriteId>[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})/users'                                                        => [
+			Methods::GET => Api\Get\SeriesFavoriteUsersAction::class
 		],
 		'/users/(?<userId>[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})/series-favorites'                                                                  => [
 			Methods::GET => Api\Get\UserSeriesFavoritesAction::class,
@@ -71,15 +80,6 @@ return [
 		],
 		'/users/(?<userId>[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})/series-favorites/(?<seriesFavoriteId>[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})' => [
 			Methods::DELETE => Api\Delete\UserSeriesFavoriteAction::class
-		],
-		'/series-favorites'                                                                                                                               => [
-			Methods::GET => Api\Get\SeriesFavoritesAction::class
-		],
-		'/series-favorites/(?<seriesFavoriteId>[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})'                                                              => [
-			Methods::GET => Api\Get\SeriesFavoriteAction::class
-		],
-		'/series-favorites/(?<seriesFavoriteId>[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})/users'                                                        => [
-			Methods::GET => Api\Get\SeriesFavoriteUsersAction::class
-		],
+		]
 	]
 ];

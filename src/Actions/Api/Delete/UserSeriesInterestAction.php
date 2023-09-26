@@ -52,7 +52,7 @@ class UserSeriesInterestAction extends AbstractWithDatabaseConnectorAction
 			return;
 		}
 
-		$this->deleteSeriesInterestByUserId( $user, $seriesInterest );
+		$this->deleteSeriesInterestByIdAndUserId( $user, $seriesInterest );
 
 		( new JsonResponder( StatusCodes::OK, null ) )
 			->respond();
@@ -91,11 +91,11 @@ class UserSeriesInterestAction extends AbstractWithDatabaseConnectorAction
 	/**
 	 * @throws PersistenceException
 	 */
-	private function deleteSeriesInterestByUserId( UserEntity $user, SeriesEntity $seriesInterest ): void
+	private function deleteSeriesInterestByIdAndUserId( UserEntity $user, SeriesEntity $seriesInterest ): void
 	{
 		( new SeriesInterestsRepository(
 			$this->getDatabaseConnector()
 		) )
-			->deleteSeriesInterestByUserId( $seriesInterest, $user );
+			->deleteSeriesInterestByIdAndUserId( $seriesInterest, $user );
 	}
 }

@@ -46,7 +46,7 @@ class UserSeriesDenialsFilteredAction extends AbstractWithDatabaseConnectorActio
 
 		$requestedUser     = new UserEntity();
 		$requestedUser->id = $inputData[ 'userId' ];
-		$user              = $this->readUser( $requestedUser );
+		$user              = $this->readUserById( $requestedUser );
 
 		if ( null === $user )
 		{
@@ -66,7 +66,7 @@ class UserSeriesDenialsFilteredAction extends AbstractWithDatabaseConnectorActio
 		);
 
 		$responderData = [
-			'seriesDenials' => $this->readSeriesDenialsFilteredByUserId( $series, $user )
+			'seriesDenials' => $this->readSeriesDenialsFilteredByNamesAndUserId( $series, $user )
 		];
 
 		( new JsonResponder( StatusCodes::OK, $responderData ) )
@@ -118,7 +118,7 @@ class UserSeriesDenialsFilteredAction extends AbstractWithDatabaseConnectorActio
 	/**
 	 * @throws PersistenceException
 	 */
-	private function readUser( UserEntity $requestedUser ): ?UserEntity
+	private function readUserById( UserEntity $requestedUser ): ?UserEntity
 	{
 		return ( new UsersRepository(
 			$this->getDatabaseConnector()
@@ -131,13 +131,13 @@ class UserSeriesDenialsFilteredAction extends AbstractWithDatabaseConnectorActio
 	 * @return SeriesEntity[]
 	 * @throws PersistenceException
 	 */
-	private function readSeriesDenialsFilteredByUserId( array $series, UserEntity $user ): array
+	private function readSeriesDenialsFilteredByNamesAndUserId( array $series, UserEntity $user ): array
 	{
 		return [] === $series
 			? []
 			: ( new SeriesDenialsRepository(
 				$this->getDatabaseConnector()
 			) )
-				->readSeriesDenialsFilteredByUserId( $series, $user );
+				->readSeriesDenialsFilteredByNamesAndUserId( $series, $user );
 	}
 }

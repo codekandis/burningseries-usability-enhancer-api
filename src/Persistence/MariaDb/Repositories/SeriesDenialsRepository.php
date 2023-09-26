@@ -77,6 +77,49 @@ class SeriesDenialsRepository extends AbstractRepository
 	}
 
 	/**
+	 * @throws PersistenceException
+	 */
+	public function readSeriesDenialByNameAndUserId( SeriesEntity $seriesDenial, UserEntity $user ): ?SeriesEntity
+	{
+		$query = <<< END
+			SELECT
+				`seriesDenials`.*
+			FROM
+				`seriesDenials`
+			INNER JOIN
+				`users_seriesDenials`
+				ON
+				`users_seriesDenials`.`userId` = :userId
+			WHERE
+			    `seriesDenials`.name = :name
+			    AND
+				`seriesDenials`.`id` = `users_seriesDenials`.`seriesDenialId`
+			LIMIT
+				0, 1;
+		END;
+
+		$arguments = [
+			'name'   => $seriesDenial->name,
+			'userId' => $user->id,
+		];
+
+		try
+		{
+			$this->databaseConnector->beginTransaction();
+			/** @var SeriesEntity $result */
+			$result = $this->databaseConnector->queryFirst( $query, $arguments, SeriesEntity::class );
+			$this->databaseConnector->commit();
+		}
+		catch ( PersistenceException $exception )
+		{
+			$this->databaseConnector->rollback();
+			throw $exception;
+		}
+
+		return $result;
+	}
+
+	/**
 	 * @return SeriesEntity[]
 	 * @throws PersistenceException
 	 */
@@ -122,7 +165,7 @@ class SeriesDenialsRepository extends AbstractRepository
 	 * @return SeriesEntity[]
 	 * @throws PersistenceException
 	 */
-	public function readSeriesDenialsFilteredByUserId( array $series, UserEntity $user ): array
+	public function readSeriesDenialsFilteredByNamesAndUserId( array $series, UserEntity $user ): array
 	{
 		$inArrayHelper = new PreparedStatementInArrayHelper(
 			'seriesName',
@@ -173,7 +216,7 @@ class SeriesDenialsRepository extends AbstractRepository
 	/**
 	 * @throws PersistenceException
 	 */
-	public function writeSeriesDenialByUserId( SeriesEntity $seriesDenialEntity, UserEntity $user ): void
+	public function writeSeriesDenialByNameAndUserId( SeriesEntity $seriesDenialEntity, UserEntity $user ): void
 	{
 		$query = <<< END
 			INSERT INTO
@@ -220,7 +263,7 @@ class SeriesDenialsRepository extends AbstractRepository
 	/**
 	 * @throws PersistenceException
 	 */
-	public function deleteSeriesDenialByUserId( SeriesEntity $seriesDenial, UserEntity $user ): void
+	public function deleteSeriesDenialByIdAndUserId( SeriesEntity $seriesDenial, UserEntity $user ): void
 	{
 		$query = <<< END
 			DELETE

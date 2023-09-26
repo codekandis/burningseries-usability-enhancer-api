@@ -9,6 +9,8 @@ use CodeKandis\BurningSeriesUsabilityEnhancerApi\Errors\CommonErrorMessages;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Errors\UsersErrorCodes;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Errors\UsersErrorMessages;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Persistence\MariaDb\Repositories\SeriesDenialsRepository;
+use CodeKandis\BurningSeriesUsabilityEnhancerApi\Persistence\MariaDb\Repositories\SeriesFavoritesRepository;
+use CodeKandis\BurningSeriesUsabilityEnhancerApi\Persistence\MariaDb\Repositories\SeriesInterestsRepository;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Persistence\MariaDb\Repositories\UsersRepository;
 use CodeKandis\Tiphy\Http\ContentTypes;
 use CodeKandis\Tiphy\Http\Requests\BadRequestException;
@@ -45,7 +47,7 @@ class UserSeriesDenialsAction extends AbstractWithDatabaseConnectorAction
 
 		$requestedUser     = new UserEntity();
 		$requestedUser->id = $inputData[ 'userId' ];
-		$user              = $this->readUser( $requestedUser );
+		$user              = $this->readUserById( $requestedUser );
 
 		if ( null === $user )
 		{
@@ -62,7 +64,20 @@ class UserSeriesDenialsAction extends AbstractWithDatabaseConnectorAction
 			 * @var SeriesEntity $seriesDenial
 			 */
 			$seriesDenial = SeriesEntity::fromObject( $sentSeriesDenial );
-			$this->writeSeriesDenialByUserId( $seriesDenial, $user );
+
+			$seriesInterest = $this->readSeriesInterestByNameAndUserId( $seriesDenial, $user );
+			if ( null !== $seriesInterest )
+			{
+				$this->deleteSeriesInterestByIdAndUserId( $seriesInterest, $user );
+			}
+
+			$seriesFavorite = $this->readSeriesFavoriteByNameAndUserId( $seriesDenial, $user );
+			if ( null !== $seriesFavorite )
+			{
+				$this->deleteSeriesFavoriteByIdAndUserId( $seriesFavorite, $user );
+			}
+
+			$this->writeSeriesDenialByNameAndUserId( $seriesDenial, $user );
 		}
 
 		( new JsonResponder( StatusCodes::OK, null ) )
@@ -114,7 +129,7 @@ class UserSeriesDenialsAction extends AbstractWithDatabaseConnectorAction
 	/**
 	 * @throws PersistenceException
 	 */
-	private function readUser( UserEntity $requestedUser ): ?UserEntity
+	private function readUserById( UserEntity $requestedUser ): ?UserEntity
 	{
 		return ( new UsersRepository(
 			$this->getDatabaseConnector()
@@ -125,11 +140,55 @@ class UserSeriesDenialsAction extends AbstractWithDatabaseConnectorAction
 	/**
 	 * @throws PersistenceException
 	 */
-	private function writeSeriesDenialByUserId( SeriesEntity $seriesDenial, UserEntity $user ): void
+	private function readSeriesInterestByNameAndUserId( SeriesEntity $requestedSeriesInterest, UserEntity $requestedUser ): ?SeriesEntity
+	{
+		return ( new SeriesInterestsRepository(
+			$this->getDatabaseConnector()
+		) )
+			->readSeriesInterestByNameAndUserId( $requestedSeriesInterest, $requestedUser );
+	}
+
+	/**
+	 * @throws PersistenceException
+	 */
+	private function deleteSeriesInterestByIdAndUserId( SeriesEntity $requestedSeriesInterest, UserEntity $requestedUser ): void
+	{
+		( new SeriesInterestsRepository(
+			$this->getDatabaseConnector()
+		) )
+			->deleteSeriesInterestByIdAndUserId( $requestedSeriesInterest, $requestedUser );
+	}
+
+	/**
+	 * @throws PersistenceException
+	 */
+	private function readSeriesFavoriteByNameAndUserId( SeriesEntity $requestedSeriesFavorite, UserEntity $requestedUser ): ?SeriesEntity
+	{
+		return ( new SeriesFavoritesRepository(
+			$this->getDatabaseConnector()
+		) )
+			->readSeriesFavoriteByNameAndUserId( $requestedSeriesFavorite, $requestedUser );
+	}
+
+	/**
+	 * @throws PersistenceException
+	 */
+	private function deleteSeriesFavoriteByIdAndUserId( SeriesEntity $requestedSeriesFavorite, UserEntity $requestedUser ): void
+	{
+		( new SeriesFavoritesRepository(
+			$this->getDatabaseConnector()
+		) )
+			->deleteSeriesFavoriteByIdAndUserId( $requestedSeriesFavorite, $requestedUser );
+	}
+
+	/**
+	 * @throws PersistenceException
+	 */
+	private function writeSeriesDenialByNameAndUserId( SeriesEntity $seriesDenial, UserEntity $user ): void
 	{
 		( new SeriesDenialsRepository(
 			$this->getDatabaseConnector()
 		) )
-			->writeSeriesDenialByUserId( $seriesDenial, $user );
+			->writeSeriesDenialByNameAndUserId( $seriesDenial, $user );
 	}
 }

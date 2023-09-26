@@ -1,12 +1,12 @@
 <?php declare( strict_types = 1 );
 namespace CodeKandis\BurningSeriesUsabilityEnhancerApi\Actions;
 
-use CodeKandis\Tiphy\Actions\AbstractAction;
-use CodeKandis\Tiphy\Persistence\MariaDb\Connector;
-use CodeKandis\Tiphy\Persistence\MariaDb\ConnectorInterface;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Configurations\ConfigurationRegistry;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Http\UriBuilders\ApiUriBuilder;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Http\UriBuilders\ApiUriBuilderInterface;
+use CodeKandis\Tiphy\Actions\AbstractAction;
+use CodeKandis\Tiphy\Persistence\MariaDb\Connector;
+use CodeKandis\Tiphy\Persistence\MariaDb\ConnectorInterface;
 
 abstract class AbstractWithDatabaseConnectorAndApiUriBuilderAction extends AbstractAction
 {

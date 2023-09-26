@@ -8,7 +8,9 @@ use CodeKandis\BurningSeriesUsabilityEnhancerApi\Errors\CommonErrorCodes;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Errors\CommonErrorMessages;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Errors\UsersErrorCodes;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Errors\UsersErrorMessages;
+use CodeKandis\BurningSeriesUsabilityEnhancerApi\Persistence\MariaDb\Repositories\SeriesDenialsRepository;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Persistence\MariaDb\Repositories\SeriesFavoritesRepository;
+use CodeKandis\BurningSeriesUsabilityEnhancerApi\Persistence\MariaDb\Repositories\SeriesInterestsRepository;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Persistence\MariaDb\Repositories\UsersRepository;
 use CodeKandis\Tiphy\Http\ContentTypes;
 use CodeKandis\Tiphy\Http\Requests\BadRequestException;
@@ -45,7 +47,7 @@ class UserSeriesFavoriteAction extends AbstractWithDatabaseConnectorAction
 
 		$requestedUser     = new UserEntity();
 		$requestedUser->id = $inputData[ 'userId' ];
-		$user              = $this->readUser( $requestedUser );
+		$user              = $this->readUserById( $requestedUser );
 
 		if ( null === $user )
 		{
@@ -60,7 +62,20 @@ class UserSeriesFavoriteAction extends AbstractWithDatabaseConnectorAction
 		 * @var SeriesEntity $seriesFavorite
 		 */
 		$seriesFavorite = SeriesEntity::fromObject( $inputData[ 'seriesFavorite' ] );
-		$this->writeSeriesFavoriteByUserId( $seriesFavorite, $user );
+
+		$seriesDenial = $this->readSeriesDenialByNameAndUserId( $seriesFavorite, $user );
+		if ( null !== $seriesDenial )
+		{
+			$this->deleteSeriesDenialByIdAndUserId( $seriesDenial, $user );
+		}
+
+		$seriesInterest = $this->readSeriesInterestByNameAndUserId( $seriesFavorite, $user );
+		if ( null !== $seriesInterest )
+		{
+			$this->deleteSeriesInterestByIdAndUserId( $seriesInterest, $user );
+		}
+
+		$this->writeSeriesFavoriteByNameAndUserId( $seriesFavorite, $user );
 
 		( new JsonResponder( StatusCodes::OK, null ) )
 			->respond();
@@ -111,7 +126,7 @@ class UserSeriesFavoriteAction extends AbstractWithDatabaseConnectorAction
 	/**
 	 * @throws PersistenceException
 	 */
-	private function readUser( UserEntity $requestedUser ): ?UserEntity
+	private function readUserById( UserEntity $requestedUser ): ?UserEntity
 	{
 		return ( new UsersRepository(
 			$this->getDatabaseConnector()
@@ -122,11 +137,55 @@ class UserSeriesFavoriteAction extends AbstractWithDatabaseConnectorAction
 	/**
 	 * @throws PersistenceException
 	 */
-	private function writeSeriesFavoriteByUserId( SeriesEntity $seriesFavorite, UserEntity $user ): void
+	private function readSeriesDenialByNameAndUserId( SeriesEntity $requestedSeriesDenial, UserEntity $requestedUser ): ?SeriesEntity
+	{
+		return ( new SeriesDenialsRepository(
+			$this->getDatabaseConnector()
+		) )
+			->readSeriesDenialByNameAndUserId( $requestedSeriesDenial, $requestedUser );
+	}
+
+	/**
+	 * @throws PersistenceException
+	 */
+	private function deleteSeriesDenialByIdAndUserId( SeriesEntity $requestedSeriesDenial, UserEntity $requestedUser ): void
+	{
+		( new SeriesDenialsRepository(
+			$this->getDatabaseConnector()
+		) )
+			->deleteSeriesDenialByIdAndUserId( $requestedSeriesDenial, $requestedUser );
+	}
+
+	/**
+	 * @throws PersistenceException
+	 */
+	private function readSeriesInterestByNameAndUserId( SeriesEntity $requestedSeriesInterest, UserEntity $requestedUser ): ?SeriesEntity
+	{
+		return ( new SeriesInterestsRepository(
+			$this->getDatabaseConnector()
+		) )
+			->readSeriesInterestByNameAndUserId( $requestedSeriesInterest, $requestedUser );
+	}
+
+	/**
+	 * @throws PersistenceException
+	 */
+	private function deleteSeriesInterestByIdAndUserId( SeriesEntity $requestedSeriesInterest, UserEntity $requestedUser ): void
+	{
+		( new SeriesInterestsRepository(
+			$this->getDatabaseConnector()
+		) )
+			->deleteSeriesInterestByIdAndUserId( $requestedSeriesInterest, $requestedUser );
+	}
+
+	/**
+	 * @throws PersistenceException
+	 */
+	private function writeSeriesFavoriteByNameAndUserId( SeriesEntity $seriesFavorite, UserEntity $user ): void
 	{
 		( new SeriesFavoritesRepository(
 			$this->getDatabaseConnector()
 		) )
-			->writeSeriesFavoriteByUserId( $seriesFavorite, $user );
+			->writeSeriesFavoriteByNameAndUserId( $seriesFavorite, $user );
 	}
 }
