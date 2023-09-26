@@ -52,7 +52,7 @@ class UserSeriesDenialAction extends AbstractWithDatabaseConnectorAction
 			return;
 		}
 
-		$this->deleteSeriesDenialByUserId( $user, $seriesDenial );
+		$this->deleteSeriesDenialByIdAndUserId( $user, $seriesDenial );
 
 		( new JsonResponder( StatusCodes::OK, null ) )
 			->respond();
@@ -91,11 +91,11 @@ class UserSeriesDenialAction extends AbstractWithDatabaseConnectorAction
 	/**
 	 * @throws PersistenceException
 	 */
-	private function deleteSeriesDenialByUserId( UserEntity $user, SeriesEntity $seriesDenial ): void
+	private function deleteSeriesDenialByIdAndUserId( UserEntity $user, SeriesEntity $seriesDenial ): void
 	{
 		( new SeriesDenialsRepository(
 			$this->getDatabaseConnector()
 		) )
-			->deleteSeriesDenialByUserId( $seriesDenial, $user );
+			->deleteSeriesDenialByIdAndUserId( $seriesDenial, $user );
 	}
 }

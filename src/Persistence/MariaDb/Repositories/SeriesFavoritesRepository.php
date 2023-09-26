@@ -122,7 +122,7 @@ class SeriesFavoritesRepository extends AbstractRepository
 	 * @return SeriesEntity[]
 	 * @throws PersistenceException
 	 */
-	public function readSeriesFavoritesFilteredByUserId( array $series, UserEntity $user ): array
+	public function readSeriesFavoritesFilteredByNamesAndUserId( array $series, UserEntity $user ): array
 	{
 		$inArrayHelper = new PreparedStatementInArrayHelper(
 			'seriesName',
@@ -173,7 +173,7 @@ class SeriesFavoritesRepository extends AbstractRepository
 	/**
 	 * @throws PersistenceException
 	 */
-	public function writeSeriesFavoriteByUserId( SeriesEntity $seriesFavoriteEntity, UserEntity $user ): void
+	public function writeSeriesFavoriteByNameAndUserId( SeriesEntity $seriesFavoriteEntity, UserEntity $user ): void
 	{
 		$query = <<< END
 			INSERT INTO
@@ -220,7 +220,7 @@ class SeriesFavoritesRepository extends AbstractRepository
 	/**
 	 * @throws PersistenceException
 	 */
-	public function deleteSeriesFavoriteByUserId( SeriesEntity $seriesFavorite, UserEntity $user ): void
+	public function deleteSeriesFavoriteByIdAndUserId( SeriesEntity $seriesFavorite, UserEntity $user ): void
 	{
 		$query = <<< END
 			DELETE

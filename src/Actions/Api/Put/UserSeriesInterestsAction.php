@@ -45,7 +45,7 @@ class UserSeriesInterestsAction extends AbstractWithDatabaseConnectorAction
 
 		$requestedUser     = new UserEntity();
 		$requestedUser->id = $inputData[ 'userId' ];
-		$user              = $this->readUser( $requestedUser );
+		$user              = $this->readUserById( $requestedUser );
 
 		if ( null === $user )
 		{
@@ -62,7 +62,7 @@ class UserSeriesInterestsAction extends AbstractWithDatabaseConnectorAction
 			 * @var SeriesEntity $seriesInterest
 			 */
 			$seriesInterest = SeriesEntity::fromObject( $sentSeriesInterest );
-			$this->writeSeriesInterestByUserId( $seriesInterest, $user );
+			$this->writeSeriesInterestByNameAndUserId( $seriesInterest, $user );
 		}
 
 		( new JsonResponder( StatusCodes::OK, null ) )
@@ -114,7 +114,7 @@ class UserSeriesInterestsAction extends AbstractWithDatabaseConnectorAction
 	/**
 	 * @throws PersistenceException
 	 */
-	private function readUser( UserEntity $requestedUser ): ?UserEntity
+	private function readUserById( UserEntity $requestedUser ): ?UserEntity
 	{
 		return ( new UsersRepository(
 			$this->getDatabaseConnector()
@@ -125,11 +125,11 @@ class UserSeriesInterestsAction extends AbstractWithDatabaseConnectorAction
 	/**
 	 * @throws PersistenceException
 	 */
-	private function writeSeriesInterestByUserId( SeriesEntity $seriesInterest, UserEntity $user ): void
+	private function writeSeriesInterestByNameAndUserId( SeriesEntity $seriesInterest, UserEntity $user ): void
 	{
 		( new SeriesInterestsRepository(
 			$this->getDatabaseConnector()
 		) )
-			->writeSeriesInterestByUserId( $seriesInterest, $user );
+			->writeSeriesInterestByNameAndUserId( $seriesInterest, $user );
 	}
 }

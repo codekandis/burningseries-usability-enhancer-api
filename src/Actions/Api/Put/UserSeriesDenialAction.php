@@ -45,7 +45,7 @@ class UserSeriesDenialAction extends AbstractWithDatabaseConnectorAction
 
 		$requestedUser     = new UserEntity();
 		$requestedUser->id = $inputData[ 'userId' ];
-		$user              = $this->readUser( $requestedUser );
+		$user              = $this->readUserById( $requestedUser );
 
 		if ( null === $user )
 		{
@@ -60,7 +60,7 @@ class UserSeriesDenialAction extends AbstractWithDatabaseConnectorAction
 		 * @var SeriesEntity $seriesDenial
 		 */
 		$seriesDenial = SeriesEntity::fromObject( $inputData[ 'seriesDenial' ] );
-		$this->writeSeriesDenialByUserId( $seriesDenial, $user );
+		$this->writeSeriesDenialByNameAndUserId( $seriesDenial, $user );
 
 		( new JsonResponder( StatusCodes::OK, null ) )
 			->respond();
@@ -111,7 +111,7 @@ class UserSeriesDenialAction extends AbstractWithDatabaseConnectorAction
 	/**
 	 * @throws PersistenceException
 	 */
-	private function readUser( UserEntity $requestedUser ): ?UserEntity
+	private function readUserById( UserEntity $requestedUser ): ?UserEntity
 	{
 		return ( new UsersRepository(
 			$this->getDatabaseConnector()
@@ -122,11 +122,11 @@ class UserSeriesDenialAction extends AbstractWithDatabaseConnectorAction
 	/**
 	 * @throws PersistenceException
 	 */
-	private function writeSeriesDenialByUserId( SeriesEntity $seriesDenial, UserEntity $user ): void
+	private function writeSeriesDenialByNameAndUserId( SeriesEntity $seriesDenial, UserEntity $user ): void
 	{
 		( new SeriesDenialsRepository(
 			$this->getDatabaseConnector()
 		) )
-			->writeSeriesDenialByUserId( $seriesDenial, $user );
+			->writeSeriesDenialByNameAndUserId( $seriesDenial, $user );
 	}
 }

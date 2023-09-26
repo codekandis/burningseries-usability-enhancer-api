@@ -46,7 +46,7 @@ class UserSeriesFavoritesFilteredAction extends AbstractWithDatabaseConnectorAct
 
 		$requestedUser     = new UserEntity();
 		$requestedUser->id = $inputData[ 'userId' ];
-		$user              = $this->readUser( $requestedUser );
+		$user              = $this->readUserById( $requestedUser );
 
 		if ( null === $user )
 		{
@@ -66,7 +66,7 @@ class UserSeriesFavoritesFilteredAction extends AbstractWithDatabaseConnectorAct
 		);
 
 		$responderData = [
-			'seriesFavorites' => $this->readSeriesFavoritesFilteredByUserId( $series, $user )
+			'seriesFavorites' => $this->readSeriesFavoritesFilteredByNamesAndUserId( $series, $user )
 		];
 
 		( new JsonResponder( StatusCodes::OK, $responderData ) )
@@ -118,7 +118,7 @@ class UserSeriesFavoritesFilteredAction extends AbstractWithDatabaseConnectorAct
 	/**
 	 * @throws PersistenceException
 	 */
-	private function readUser( UserEntity $requestedUser ): ?UserEntity
+	private function readUserById( UserEntity $requestedUser ): ?UserEntity
 	{
 		return ( new UsersRepository(
 			$this->getDatabaseConnector()
@@ -131,13 +131,13 @@ class UserSeriesFavoritesFilteredAction extends AbstractWithDatabaseConnectorAct
 	 * @return SeriesEntity[]
 	 * @throws PersistenceException
 	 */
-	private function readSeriesFavoritesFilteredByUserId( array $series, UserEntity $user ): array
+	private function readSeriesFavoritesFilteredByNamesAndUserId( array $series, UserEntity $user ): array
 	{
 		return [] === $series
 			? []
 			: ( new SeriesFavoritesRepository(
 				$this->getDatabaseConnector()
 			) )
-				->readSeriesFavoritesFilteredByUserId( $series, $user );
+				->readSeriesFavoritesFilteredByNamesAndUserId( $series, $user );
 	}
 }

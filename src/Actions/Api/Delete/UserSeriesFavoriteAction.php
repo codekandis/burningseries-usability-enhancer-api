@@ -52,7 +52,7 @@ class UserSeriesFavoriteAction extends AbstractWithDatabaseConnectorAction
 			return;
 		}
 
-		$this->deleteSeriesFavoriteByUserId( $user, $seriesFavorite );
+		$this->deleteSeriesFavoriteByIdAndUserId( $user, $seriesFavorite );
 
 		( new JsonResponder( StatusCodes::OK, null ) )
 			->respond();
@@ -91,11 +91,11 @@ class UserSeriesFavoriteAction extends AbstractWithDatabaseConnectorAction
 	/**
 	 * @throws PersistenceException
 	 */
-	private function deleteSeriesFavoriteByUserId( UserEntity $user, SeriesEntity $seriesFavorite ): void
+	private function deleteSeriesFavoriteByIdAndUserId( UserEntity $user, SeriesEntity $seriesFavorite ): void
 	{
 		( new SeriesFavoritesRepository(
 			$this->getDatabaseConnector()
 		) )
-			->deleteSeriesFavoriteByUserId( $seriesFavorite, $user );
+			->deleteSeriesFavoriteByIdAndUserId( $seriesFavorite, $user );
 	}
 }
