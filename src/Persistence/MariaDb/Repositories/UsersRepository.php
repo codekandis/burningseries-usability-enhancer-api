@@ -197,4 +197,45 @@ class UsersRepository extends AbstractRepository
 
 		return $resultSet;
 	}
+
+	/**
+	 * @return UserEntity[]
+	 * @throws PersistenceException
+	 */
+	public function readUsersBySeriesWatchId( SeriesEntity $seriesWatch ): array
+	{
+		$query = <<< END
+			SELECT
+				`users`.*
+			FROM
+				`users`
+			INNER JOIN
+				`users_seriesWatched`
+				ON
+				`users_seriesWatched`.`seriesWatchId` = :seriesWatchId
+			WHERE
+				`users`.`id` = `users_seriesWatched`.`userId`
+			ORDER BY
+				`users`.`name` ASC;
+		END;
+
+		$arguments = [
+			'seriesWatchId' => $seriesWatch->id
+		];
+
+		try
+		{
+			$this->databaseConnector->beginTransaction();
+			/** @var UserEntity[] $resultSet */
+			$resultSet = $this->databaseConnector->query( $query, $arguments, UserEntity::class );
+			$this->databaseConnector->commit();
+		}
+		catch ( PersistenceException $exception )
+		{
+			$this->databaseConnector->rollback();
+			throw $exception;
+		}
+
+		return $resultSet;
+	}
 }
