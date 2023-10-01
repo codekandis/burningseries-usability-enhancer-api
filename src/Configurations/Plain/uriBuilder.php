@@ -17,6 +17,10 @@ return [
 		'seriesFavorites'     => 'series-favorites',
 		'seriesFavorite'      => 'series-favorites/%s',
 		'seriesFavoriteUsers' => 'series-favorites/%s/users',
-		'userSeriesFavorites' => 'users/%s/series-favorites'
+		'userSeriesFavorites' => 'users/%s/series-favorites',
+		'seriesWatched'       => 'series-watched',
+		'seriesWatch'         => 'series-watched/%s',
+		'seriesWatchUsers'    => 'series-watched/%s/users',
+		'userSeriesWatched'   => 'users/%s/series-watched'
 	]
 ];
