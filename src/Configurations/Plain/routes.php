@@ -80,6 +80,28 @@ return [
 		],
 		'/users/(?<userId>[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})/series-favorites/(?<seriesFavoriteId>[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})' => [
 			Methods::DELETE => Api\Delete\UserSeriesFavoriteAction::class
+		],
+		'/series-watched'                                                                                                                                 => [
+			Methods::GET => Api\Get\SeriesWatchedAction::class
+		],
+		'/series-watched/(?<seriesWatchId>[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})'                                                                   => [
+			Methods::GET => Api\Get\SeriesWatchAction::class
+		],
+		'/series-watched/(?<seriesWatchId>[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})/users'                                                             => [
+			Methods::GET => Api\Get\SeriesWatchUsersAction::class
+		],
+		'/users/(?<userId>[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})/series-watched'                                                                    => [
+			Methods::GET => Api\Get\UserSeriesWatchedAction::class,
+			Methods::PUT => Api\Put\UserSeriesWatchAction::class
+		],
+		'/users/(?<userId>[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})/series-watched/filtered'                                                           => [
+			Methods::PUT => Api\Put\UserSeriesWatchedFilteredAction::class
+		],
+		'/users/(?<userId>[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})/series-watched/plain'                                                              => [
+			Methods::PUT => Api\Put\UserSeriesWatchedAction::class
+		],
+		'/users/(?<userId>[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})/series-watched/(?<seriesWatchId>[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})'      => [
+			Methods::DELETE => Api\Delete\UserSeriesWatchAction::class
 		]
 	]
 ];

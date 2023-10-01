@@ -19,4 +19,7 @@ class IndexEntity extends AbstractEntity
 
 	/** @var string */
 	public string $seriesFavoritesUri = '';
+
+	/** @var string */
+	public string $seriesWatchedUri = '';
 }

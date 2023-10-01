@@ -79,4 +79,24 @@ class ApiUriBuilder extends AbstractUriBuilder implements ApiUriBuilderInterface
 	{
 		return $this->build( 'seriesFavoriteUsers', $seriesFavoriteId );
 	}
+
+	public function buildUserSeriesWatchedUri( string $userId ): string
+	{
+		return $this->build( 'userSeriesWatched', $userId );
+	}
+
+	public function buildSeriesWatchedUri(): string
+	{
+		return $this->build( 'seriesWatched' );
+	}
+
+	public function buildSeriesWatchUri( string $seriesWatchId ): string
+	{
+		return $this->build( 'seriesWatch', $seriesWatchId );
+	}
+
+	public function buildSeriesWatchUsersUri( string $seriesWatchId ): string
+	{
+		return $this->build( 'seriesWatchUsers', $seriesWatchId );
+	}
 }
