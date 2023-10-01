@@ -2,5 +2,5 @@
 namespace CodeKandis\BurningSeriesUsabilityEnhancerApi\Configurations\Plain;
 
 return [
-	'release' => '0.8.0'
+	'release' => '0.9.0'
 ];
