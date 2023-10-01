@@ -32,4 +32,12 @@ interface ApiUriBuilderInterface
 	public function buildSeriesFavoriteUri( string $seriesFavoriteId ): string;
 
 	public function buildSeriesFavoriteUsersUri( string $seriesFavoriteId ): string;
+
+	public function buildUserSeriesWatchedUri( string $userId ): string;
+
+	public function buildSeriesWatchedUri(): string;
+
+	public function buildSeriesWatchUri( string $seriesWatchId ): string;
+
+	public function buildSeriesWatchUsersUri( string $seriesWatchId ): string;
 }
