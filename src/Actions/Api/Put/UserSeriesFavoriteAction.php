@@ -11,6 +11,7 @@ use CodeKandis\BurningSeriesUsabilityEnhancerApi\Errors\UsersErrorMessages;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Persistence\MariaDb\Repositories\SeriesDenialsRepository;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Persistence\MariaDb\Repositories\SeriesFavoritesRepository;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Persistence\MariaDb\Repositories\SeriesInterestsRepository;
+use CodeKandis\BurningSeriesUsabilityEnhancerApi\Persistence\MariaDb\Repositories\SeriesWatchedRepository;
 use CodeKandis\BurningSeriesUsabilityEnhancerApi\Persistence\MariaDb\Repositories\UsersRepository;
 use CodeKandis\Tiphy\Http\ContentTypes;
 use CodeKandis\Tiphy\Http\Requests\BadRequestException;
@@ -73,6 +74,12 @@ class UserSeriesFavoriteAction extends AbstractWithDatabaseConnectorAction
 		if ( null !== $seriesInterest )
 		{
 			$this->deleteSeriesInterestByIdAndUserId( $seriesInterest, $user );
+		}
+
+		$seriesWatch = $this->readSeriesWatchByNameAndUserId( $seriesFavorite, $user );
+		if ( null !== $seriesWatch )
+		{
+			$this->deleteSeriesWatchByIdAndUserId( $seriesWatch, $user );
 		}
 
 		$this->writeSeriesFavoriteByNameAndUserId( $seriesFavorite, $user );
@@ -176,6 +183,28 @@ class UserSeriesFavoriteAction extends AbstractWithDatabaseConnectorAction
 			$this->getDatabaseConnector()
 		) )
 			->deleteSeriesInterestByIdAndUserId( $requestedSeriesInterest, $requestedUser );
+	}
+
+	/**
+	 * @throws PersistenceException
+	 */
+	private function readSeriesWatchByNameAndUserId( SeriesEntity $requestedSeriesWatch, UserEntity $requestedUser ): ?SeriesEntity
+	{
+		return ( new SeriesWatchedRepository(
+			$this->getDatabaseConnector()
+		) )
+			->readSeriesWatchByNameAndUserId( $requestedSeriesWatch, $requestedUser );
+	}
+
+	/**
+	 * @throws PersistenceException
+	 */
+	private function deleteSeriesWatchByIdAndUserId( SeriesEntity $requestedSeriesWatch, UserEntity $requestedUser ): void
+	{
+		( new SeriesWatchedRepository(
+			$this->getDatabaseConnector()
+		) )
+			->deleteSeriesWatchByIdAndUserId( $requestedSeriesWatch, $requestedUser );
 	}
 
 	/**
